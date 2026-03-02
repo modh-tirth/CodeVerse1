@@ -92,33 +92,31 @@
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                             <div class="admin-content analysis-progrebar-ctn res-mg-t-30">
-                                <h4 class="text-left text-uppercase"><b>Pending Approvals</b></h4>
+                                <h4 class="text-left text-uppercase"><b>Upcoming Hackathons</b></h4>
                                 <div class="row vertical-center-box vertical-center-box-tablet">
-                                    <div class="text-left col-xs-3 mar-bot-15">
+                                    <!-- div class="text-left col-xs-3 mar-bot-15">
                                         <label class="label bg-red">Urgent <i class="fa fa-clock-o" aria-hidden="true"></i></label>
-                                    </div>
+                                    </div-->
                                     <div class="col-xs-9 cus-gh-hd-pro">
-                                        <h2 class="text-right no-margin">08</h2>
+                                        <h2 class="text-right no-margin">${upcomingHackathon}</h2>
                                     </div>
                                 </div>
-                                <div class="progress progress-mini">
+                                <!--div class="progress progress-mini">
                                     <div style="width: 45%;" class="progress-bar progress-bar-danger bg-red"></div>
-                                </div>
+                                </div-->
                             </div>
                         </div>
+                        
                         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                             <div class="admin-content analysis-progrebar-ctn res-mg-t-30">
-                                <h4 class="text-left text-uppercase"><b>Total Users</b></h4>
+                                <h4 class="text-left text-uppercase"><b>Live Hackathon</b></h4>
                                 <div class="row vertical-center-box vertical-center-box-tablet">
-                                    <div class="text-left col-xs-3 mar-bot-15">
-                                        <label class="label bg-blue">Users <i class="fa fa-users" aria-hidden="true"></i></label>                                    </div>
+                                   
                                     <div class="col-xs-9 cus-gh-hd-pro">
-                                        <h2 class="text-right no-margin">2,405</h2>
+                                        <h2 class="text-right no-margin">${liveHackathon}</h2>
                                     </div>
                                 </div>
-                                <div class="progress progress-mini">
-                                    <div style="width: 85%;" class="progress-bar bg-blue"></div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

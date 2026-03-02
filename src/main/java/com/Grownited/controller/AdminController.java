@@ -25,10 +25,13 @@ public class AdminController {
 	    public String showDashboard(Model model) {
 	        // You can later replace these hardcoded values with Service calls
 		    long totalHackathon = hackathonRepository.count();
+		    long upcomingHackathon = hackathonRepository.countByStatus("UPCOMING");
+		    long liveHackathon = hackathonRepository.countByStatus("LIVE");
+		    
 		     
 	        model.addAttribute("totalHackathon", totalHackathon);
-	        model.addAttribute("pendingCount", 8);
-	        model.addAttribute("userCount", 2405);
+	        model.addAttribute("upcomingHackathon", upcomingHackathon);
+	        model.addAttribute("liveHackathon", liveHackathon);
 	        
 	        return "AdminDashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
 	    }
