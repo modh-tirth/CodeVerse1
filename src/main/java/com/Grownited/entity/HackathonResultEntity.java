@@ -12,54 +12,55 @@ public class HackathonResultEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer hackathon_result_id;
-	private Integer hackathon_id;
-	private Integer judge_id;
-	private Integer team_id;
-	private String innovation;
-	private String implementation;
-	private String codingStandard;
+    private Integer hackathonResultId;
+	private Integer hackathonId;
+	private Integer judgeId;
+	private Integer teamId;
+	private Integer innovation;
+	private Integer implementation;
+	private Integer codingStandard;
 	private String round;
-	public Integer getHackathon_result_id() {
-		return hackathon_result_id;
+
+	public Integer getHackathonResultId() {
+		return hackathonResultId;
 	}
-	public void setHackathon_result_id(Integer hackathon_result_id) {
-		this.hackathon_result_id = hackathon_result_id;
+	public void setHackathonResultId(Integer hackathonResultId) {
+		this.hackathonResultId = hackathonResultId;
 	}
-	public Integer getHackathon_id() {
-		return hackathon_id;
+	public Integer getHackathonId() {
+		return hackathonId;
 	}
-	public void setHackathon_id(Integer hackathon_id) {
-		this.hackathon_id = hackathon_id;
+	public void setHackathonId(Integer hackathonId) {
+		this.hackathonId = hackathonId;
 	}
-	public Integer getJudge_id() {
-		return judge_id;
+	public Integer getJudgeId() {
+		return judgeId;
 	}
-	public void setJudge_id(Integer judge_id) {
-		this.judge_id = judge_id;
+	public void setJudgeId(Integer judgeId) {
+		this.judgeId = judgeId;
 	}
-	public Integer getTeam_id() {
-		return team_id;
+	public Integer getTeamId() {
+		return teamId;
 	}
-	public void setTeam_id(Integer team_id) {
-		this.team_id = team_id;
+	public void setTeamId(Integer teamId) {
+		this.teamId = teamId;
 	}
-	public String getInnovation() {
+	public Integer getInnovation() {
 		return innovation;
 	}
-	public void setInnovation(String innovation) {
+	public void setInnovation(Integer innovation) {
 		this.innovation = innovation;
 	}
-	public String getImplementation() {
+	public Integer getImplementation() {
 		return implementation;
 	}
-	public void setImplementation(String implementation) {
+	public void setImplementation(Integer implementation) {
 		this.implementation = implementation;
 	}
-	public String getCodingStandard() {
+	public Integer getCodingStandard() {
 		return codingStandard;
 	}
-	public void setCodingStandard(String codingStandard) {
+	public void setCodingStandard(Integer codingStandard) {
 		this.codingStandard = codingStandard;
 	}
 	public String getRound() {

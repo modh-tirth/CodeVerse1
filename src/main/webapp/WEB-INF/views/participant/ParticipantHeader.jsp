@@ -33,7 +33,7 @@
                     <i class="fas fa-user-circle"></i> Profile
                 </a>
                 <div class="dropdown-divider"></div>
-                <form action="${pageContext.request.contextPath}/logout" method="post" style="margin:0;">
+                <form action="${pageContext.request.contextPath}/logout" method="get" style="margin:0;">
                     <button type="submit" class="dropdown-item">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
@@ -183,7 +183,63 @@
         background: #edf2f7;
         margin: 4px 0;
     }
+    /* Fixes the Header to the top */
+.participant-header {
+    position: sticky; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* Consistent height */
+    z-index: 1000; 
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-sizing: border-box; /* Crucial for width: 100% */
+    border-bottom: 1px solid #e9eef2;
+}
+    /* Global fix to prevent horizontal overflow always */
+html, body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fixes the Header to the top */
+.participant-header {
+    position: sticky; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px; /* Consistent height */
+    z-index: 1000; 
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    box-sizing: border-box; /* Crucial for width: 100% */
+    border-bottom: 1px solid #e9eef2;
+}
+
+/* The "Lock" class for mobile menu */
+body.mobile-menu-active {
+    position: fixed; /* Locks background completely */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* Removes vertical scroll too so menu is the only scrollable item */
+}
+
+/* User Profile adjustments */
+.user-avatar {
+    flex-shrink: 0; /* Prevents avatar from squishing */
+}
 </style>
+    
 
 <script>
     const sidebar = document.getElementById('sidebar');

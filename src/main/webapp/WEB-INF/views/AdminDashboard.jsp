@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="https://jakarta.ee/jsp/jstl/core" prefix="c" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,9 +11,11 @@
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* (Keep all your existing CSS exactly as before) */
+        /* (keep all your existing CSS exactly as before) */
         * {
             margin: 0;
             padding: 0;
@@ -23,6 +25,7 @@
             font-family: 'Inter', sans-serif;
             background: #f5f7fb;
             color: #1e293b;
+            overflow-x: hidden;
         }
         .app-wrapper {
             display: flex;
@@ -227,6 +230,7 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
             margin-bottom: 30px;
+              height: 25%;
         }
         .stat-card {
             background: white;
@@ -266,6 +270,53 @@
             font-size: 2rem;
             font-weight: 700;
             color: #0f172a;
+        }
+        /* Chart cards */
+      /*  .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;*/
+            .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* FIX */
+    gap: 20px;
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    overflow: hidden; /* prevent stretch */
+    
+}
+.chart-container{
+    background-color: white;
+    border-radius: 12px; /* optional for clean UI */
+}
+        }
+        .chart-card {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.02);
+            border: 1px solid #edf2f7;
+        }
+        .chart-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-card h4 i {
+            color: #3b82f6;
+        }
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
         }
         .table-card {
             background: white;
@@ -391,8 +442,119 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
         }
-    </style>
+        /* Make the entire wrapper fill the viewport and prevent outer scrolling */
+.app-wrapper {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Main content area: full height, flex column, no outer scroll */
+.main-content {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Content area (the part with stats, charts, table) becomes scrollable */
+.content-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px; /* keep your existing padding */
+}
+.content-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: auto; /* REMOVE SCROLL */
+    padding: 20px;
+}
+.chart-card {
+	
+    display: flex;
+    flex-direction: column;
+}
+.chart-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+.chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+}
+.stat-card {
+    padding: 16px;
+}
+
+.chart-card {
+    padding: 26px;
+}
+.chart-card canvas {
+    flex: 1 !important;
+}
+
+/* Sidebar: full height, flex column so its header stays fixed */
+.sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar menu becomes scrollable if items overflow */
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Optional: hide scrollbar for a cleaner look (works in WebKit) */
+.sidebar-menu::-webkit-scrollbar {
+    width: 4px;
+}
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+}
+  width: 100%;
+}
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    height: 30%; /* Adjust this */
+}
+.chart-card h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-card h4 i {
+    color: #3b82f6;
+    font-size: 1.1rem;
+}
+.chart-container {
+    background: #f8fafc; /* light inner background */
+    border-radius: 12px;
+    padding: 10px;
+    height: 300px;
+}
+</style>
 </head>
 <body>
     <div class="app-wrapper">
@@ -454,9 +616,45 @@
                         </div>
                     </div>
                 </div>
-                    
+
+                <!-- Charts Row 1 (existing) -->
+                <div class="chart-grid">
+                    <!-- Doughnut Chart: Hackathon Status Distribution -->
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-pie"></i> Hackathon Status</h4>
+                        <div class="chart-container">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Bar Chart: User Roles Distribution -->
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-bar"></i> User Roles</h4>
+                        <div class="chart-container">
+                            <canvas id="roleChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Charts Row 2 -->
+                <div class="chart-grid">
+                    <!-- Line Chart: Registrations Over Time -->
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-line"></i> Registrations Over Time</h4>
+                        <div class="chart-container">
+                            <canvas id="registrationsChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Horizontal Bar Chart: Top Hackathons by Participants -->
+                    <div class="chart-card">
+                        <h4><i class="fas fa-ranking-star"></i> Top Hackathons by Participants</h4>
+                        <div class="chart-container">
+                            <canvas id="topHackathonsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Pending Approvals Table (unchanged) -->
-                <div class="table-card">
+                <!-- div class="table-card">
                     <div class="card-header">
                         <h3><i class="fas fa-hourglass-half"></i> Pending Approvals</h3>
                         <a href="#" class="view-all">View all <i class="fas fa-arrow-right"></i></a>
@@ -489,7 +687,7 @@
                         </table>
                     </div>
                 </div>
-            </div>
+            </div-->
 
             <!-- Footer (unchanged) -->
             <footer class="footer">
@@ -498,7 +696,120 @@
         </div>
     </div>
 
-    <!-- JavaScript (unchanged, but ensure it still references the correct elements) -->
+    <!-- JavaScript for Charts -->
+    <script>
+        // Hackathon Status Chart (doughnut)
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Upcoming', 'Live', 'Expired'],
+                datasets: [{
+                    data: [
+                        ${upcomingHackathon != null ? upcomingHackathon : 0},
+                        ${liveHackathon != null ? liveHackathon : 0},
+                        ${totalHackathon - (upcomingHackathon + liveHackathon) + 0}
+                    ],
+                    backgroundColor: ['#fbbf24', '#10b981', '#94a3b8'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+
+        // User Roles Chart (bar)
+        const roleCtx = document.getElementById('roleChart').getContext('2d');
+        new Chart(roleCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Participants', 'Judges','Admins'],
+                datasets: [{
+                    label: 'Number of Users',
+                    data: [
+                        ${totalParticipants != null ? totalParticipants : 0},
+                        ${totalJudges != null ? totalJudges : 0},
+                        ${totalAdmins != null ? totalAdmins : 0}
+                    ],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } } }
+            }
+        });
+
+        // Registrations Over Time (line chart)
+        const registrationsCtx = document.getElementById('registrationsChart').getContext('2d');
+        new Chart(registrationsCtx, {
+            type: 'line',
+            data: {
+                labels: [
+                    <c:forEach items="${monthLabels}" var="label" varStatus="loop">
+                        '${label}'${!loop.last ? ',' : ''}
+                    </c:forEach>
+                ],
+                datasets: [{
+                    label: 'Registrations',
+                    data: [
+                        <c:forEach items="${registrationCounts}" var="count" varStatus="loop">
+                            ${count}${!loop.last ? ',' : ''}
+                        </c:forEach>
+                    ],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, grid: { color: '#e2e8f0' } } }
+            }
+        });
+
+        // Top Hackathons by Participants (horizontal bar chart)
+        const topHackathonsCtx = document.getElementById('topHackathonsChart').getContext('2d');
+        new Chart(topHackathonsCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    <c:forEach items="${topHackathonNames}" var="name" varStatus="loop">
+                        '${name}'${!loop.last ? ',' : ''}
+                    </c:forEach>
+                ],
+                datasets: [{
+                    label: 'Participants',
+                    data: [
+                        <c:forEach items="${topHackathonParticipants}" var="count" varStatus="loop">
+                            ${count}${!loop.last ? ',' : ''}
+                        </c:forEach>
+                    ],
+                    backgroundColor: '#10b981',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',  // horizontal bars
+                plugins: { legend: { display: false } },
+                scales: { x: { beginAtZero: true, grid: { color: '#e2e8f0' } } }
+            }
+        });
+    </script>
+
+    <!-- Sidebar toggle JavaScript (unchanged) -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggleSidebar');
@@ -540,3 +851,4 @@
     </script>
 </body>
 </html>
+

@@ -34,6 +34,7 @@ public class AdminController {
 		    long totalUsers = userRepository.count();	
 		    long totalParticipants = userRepository.countByRole("participant");
 		    long totalJudges = userRepository.countByRole("judge");
+		    long totalAdmins = userRepository.countByRole("admin");
 		     
 	        model.addAttribute("totalHackathon", totalHackathon);
 	        model.addAttribute("upcomingHackathon", upcomingHackathon);
@@ -41,7 +42,7 @@ public class AdminController {
 	        model.addAttribute("totalUsers",totalUsers);
 	        model.addAttribute("totalParticipants",totalParticipants);
 	        model.addAttribute("totalJudges",totalJudges);
-	        
+	        model.addAttribute("totalAdmins",totalAdmins);
 	        return "AdminDashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
 	    }
 	 

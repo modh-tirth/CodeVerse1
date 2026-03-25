@@ -12,21 +12,22 @@ public class HackathonPrizeEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer hackathon_prize_id;
-	private Integer hackathon_id;
+	private Integer hackathonPrizeId;
+	private Integer hackathonId;
 	private String prizeTitle;
 	private String prizeDescription;
-	public Integer getHackathon_prize_id() {
-		return hackathon_prize_id;
+		
+	public Integer getHackathonPrizeId() {
+		return hackathonPrizeId;
 	}
-	public void setHackathon_prize_id(Integer hackathon_prize_id) {
-		this.hackathon_prize_id = hackathon_prize_id;
+	public void setHackathonPrizeId(Integer hackathonPrizeId) {
+		this.hackathonPrizeId = hackathonPrizeId;
 	}
-	public Integer getHackathon_id() {
-		return hackathon_id;
+	public Integer getHackathonId() {
+		return hackathonId;
 	}
-	public void setHackathon_id(Integer hackathon_id) {
-		this.hackathon_id = hackathon_id;
+	public void setHackathonId(Integer hackathonId) {
+		this.hackathonId = hackathonId;
 	}
 	public String getPrizeTitle() {
 		return prizeTitle;
@@ -41,5 +42,4 @@ public class HackathonPrizeEntity {
 		this.prizeDescription = prizeDescription;
 	}
 	
-
 }

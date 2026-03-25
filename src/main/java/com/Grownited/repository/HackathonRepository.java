@@ -10,7 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import com.Grownited.entity.HackathonEntity;
 import com.Grownited.entity.HackathonPrizeEntity;
+import com.Grownited.entity.HackathonTeamEntity;
 
+import java.awt.print.Pageable;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -18,14 +21,8 @@ import java.util.List;
 @Repository
 public interface HackathonRepository extends JpaRepository<HackathonEntity, Integer> {
      
-	   //Optional<HackathonEntity> 
 	    long countByStatus(String status);
-	    @Query("SELECT DISTINCT h FROM HackathonEntity h " +
-	            "LEFT JOIN HackathonTeamEntity t ON h.hackthon_id = t.hackathonId " +
-	            "LEFT JOIN HackathonTeamMembersEntity m ON t.hackathonTeamId = m.teamId " +
-	            "WHERE t.teamLeaderId = :userId OR m.memberId = :userId")
-	     List<HackathonEntity> findRegistrationsByUserId(@Param("userId") Integer userId);
-	    
+	   
 
 	    
 }

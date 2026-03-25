@@ -482,6 +482,7 @@
             justify-content: center;
             padding: 12px 0;
         }
+       
     </style>
 </head>
 <body>
@@ -579,11 +580,8 @@
                     <div class="pagination">
                         <a href="#" class="page-link">Previous</a>
                         <a href="#" class="page-link">1</a>
-                        <a href="#" class="page-link">2</a>
-                        <a href="#" class="page-link">3</a>
                         <a href="#" class="page-link">Next</a>
                     </div>
-                </div>
             </div>
 
             <!-- Footer -->
@@ -630,6 +628,47 @@
                 sidebar.classList.remove('mobile-open');
             }
         });
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('#tableBody tr');
+            const rowsPerPage = 10;
+            let currentPage = 1;
+            const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+            const totalPagesSpan = document.getElementById('totalPages');
+            totalPagesSpan.textContent = totalPages;
+
+            function showPage(page) {
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+                rows.forEach((row, index) => {
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
+                pageInfo.textContent = `Page ${page} of ${totalPages}`;
+                prevBtn.disabled = (page === 1);
+                nextBtn.disabled = (page === totalPages || totalPages === 0);
+            }
+
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Initial display
+            showPage(1);
+        });
     </script>
+    
 </body>
 </html>

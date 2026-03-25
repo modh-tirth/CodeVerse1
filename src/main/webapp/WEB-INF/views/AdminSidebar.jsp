@@ -107,7 +107,10 @@
     transform: rotate(-90deg);
   }
 
-  .menu-item:hover,
+  .menu-item:hover{
+  	 background: rgba(59, 130, 246, 0.2);
+     color: white;
+  }
   .menu-item.active {
     background: rgba(59, 130, 246, 0.2);
     color: white;
@@ -167,22 +170,51 @@
   .sidebar.collapsed .submenu {
     display: none;
   }
-
-  /* Mobile behavior */
-  @media (max-width: 768px) {
-    .sidebar {
-      position: fixed;
-      left: -260px;
-      height: 100vh;
-      z-index: 1000;
-      transition: left 0.3s ease;
-    }
-    .sidebar.mobile-open {
-      left: 0;
-    }
+ 	   
   }
-  
+  /* Add this to your Sidebar CSS if not present */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px; /* Start hidden */
+        width: 260px;
+        height: 100vh;
+        z-index: 9999; /* Higher than header */
+        transition: left 0.3s ease;
+    }
+ 
+}
+
+/* Default Mobile Sidebar State (Hidden) */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px; /* Fully hidden off-screen (adjust to sidebar width) */
+        width: 280px;
+        height: 100vh;
+        z-index: 2000; /* Must be above header and content */
+        background: #1e293b; /* Match your dashboard color */
+        transition: left 0.3s ease-in-out;
+        box-shadow: none;
+    }
+
+    /* Shown State when toggled */
+    #sidebar.mobile-open {
+        left: 0; 
+        box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+    }
+    
+    /* Ensure the main content takes full width on mobile */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
 </style>
+  
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
@@ -264,6 +296,20 @@
 </aside>
 
 <script>
+
+const menuItems = document.querySelectorAll('.menu-item');
+
+menuItems.forEach(item => {
+  item.addEventListener('click', function () {
+    
+    // Remove active from all
+    menuItems.forEach(i => i.classList.remove('active'));
+    
+    // Add active to clicked one
+    this.classList.add('active');
+  });
+});
+
   const sidebar = document.getElementById('sidebar');
 
   // Submenu toggles (only when sidebar is expanded)
@@ -287,4 +333,31 @@
   setupSubmenu(hackathonMenu, hackathonSubmenu);
   setupSubmenu(userMenu, userSubmenu);
   setupSubmenu(categoryMenu, categorySubmenu);
+  
+
+  const currentPath = window.location.pathname;
+
+  // Select all submenu links
+  document.querySelectorAll('.submenu-item a').forEach(link => {
+    const href = link.getAttribute('href');
+
+    if (href === currentPath) {
+      // Highlight submenu item
+      link.closest('.submenu-item').classList.add('active');
+
+      // Get parent submenu
+      const submenu = link.closest('.submenu');
+
+      // Open submenu
+      submenu.classList.add('open');
+
+      // Get corresponding menu-item
+      const menuItem = submenu.previousElementSibling;
+
+      if (menuItem) {
+        menuItem.classList.add('active');
+        menuItem.classList.add('open'); // rotate arrow
+      }
+    }
+  });
 </script>

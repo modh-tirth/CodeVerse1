@@ -138,6 +138,50 @@
       left: 0;
     }
   }
+   /* Add this to your Sidebar CSS if not present */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px; /* Start hidden */
+        width: 260px;
+        height: 100vh;
+        z-index: 9999; /* Higher than header */
+        transition: left 0.3s ease;
+    }
+    
+    #sidebar.mobile-open {
+        left: 0; /* Slide in */
+    }
+}
+
+/* Default Mobile Sidebar State (Hidden) */
+@media (max-width: 768px) {
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -280px; /* Fully hidden off-screen (adjust to sidebar width) */
+        width: 280px;
+        height: 100vh;
+        z-index: 2000; /* Must be above header and content */
+        background: #1e293b; /* Match your dashboard color */
+        transition: left 0.3s ease-in-out;
+        box-shadow: none;
+    }
+
+    /* Shown State when toggled */
+    #sidebar.mobile-open {
+        left: 0; 
+        box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+    }
+    
+    /* Ensure the main content takes full width on mobile */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+  
 </style>
 
 <!-- Sidebar -->
@@ -161,7 +205,7 @@
 
     <!-- My Hackathons -->
     <div class="menu-item">
-      <a href="/participant/myHackathons">
+      <a href="/participant/my-hackathons">
         <i class="fas fa-calendar-alt"></i>
         <span>My Hackathons</span>
       </a>

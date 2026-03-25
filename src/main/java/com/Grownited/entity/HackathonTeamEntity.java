@@ -18,8 +18,7 @@ public class HackathonTeamEntity {
     private Integer teamLeaderId;     // instead of team_leader_id
     private String teamName;
     private String teamStatus;
-    private String memberEmails;
-    private String teamDescription;
+ 
 	public Integer getHackathonTeamId() {
 		return hackathonTeamId;
 	}
@@ -50,18 +49,7 @@ public class HackathonTeamEntity {
 	public void setTeamStatus(String teamStatus) {
 		this.teamStatus = teamStatus;
 	}
-	public String getMemberEmails() {
-		return memberEmails;
-	}
-	public void setMemberEmails(String memberEmails) {
-		this.memberEmails = memberEmails;
-	}
-	public String getTeamDescription() {
-		return teamDescription;
-	}
-	public void setTeamDescription(String teamDescription) {
-		this.teamDescription = teamDescription;
-	}
+
 		
 
 }

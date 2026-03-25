@@ -2,6 +2,7 @@ package com.Grownited.entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,12 +15,13 @@ public class HackathonEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer	hackthon_id;
+	private Integer	hackathonId;
 	private String title;
-	String description; 
+	@Column(name = "description", length = 2000)
+    private	String description; 
 	private String hackathonPosterURL;
 	private String status;
-	private String event_type;
+	private String eventType;
 	private String payment;
 	private Integer minTeamSize;
 	private Integer maxTeamSize;
@@ -27,12 +29,14 @@ public class HackathonEntity {
 	private String userType;	
 	private LocalDate registrationStartDate;
 	private LocalDate registrationEndDate;
+	Boolean leaderboardPublished;
 	private Integer userId;
-	public Integer getHackthon_id() {
-		return hackthon_id;
+	
+	public Integer getHackathonId() {
+		return hackathonId;
 	}
-	public void setHackthon_id(Integer hackthon_id) {
-		this.hackthon_id = hackthon_id;
+	public void setHackathonId(Integer hackathonId) {
+		this.hackathonId = hackathonId;
 	}
 	public String getTitle() {
 		return title;
@@ -46,11 +50,11 @@ public class HackathonEntity {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getEvent_type() {
-		return event_type;
+	public String getEventType() {
+		return eventType;
 	}
-	public void setEvent_type(String event_type) {
-		this.event_type = event_type;
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
 	}
 	public String getPayment() {
 		return payment;
@@ -112,7 +116,11 @@ public class HackathonEntity {
 	public void setHackathonPosterURL(String hackathonPosterURL) {
 		this.hackathonPosterURL = hackathonPosterURL;
 	}
+	public Boolean getLeaderboardPublished() {
+		return leaderboardPublished;
+	}
+	public void setLeaderboardPublished(Boolean leaderboardPublished) {
+		this.leaderboardPublished = leaderboardPublished;
+	}
 	
-		
-
 }

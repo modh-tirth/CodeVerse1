@@ -13,7 +13,13 @@ import com.Grownited.entity.HackathonPrizeEntity;
 @Repository
 public interface HackathonPrizeRepository extends JpaRepository<HackathonPrizeEntity, Integer> {
 
-	@Query("SELECT p FROM HackathonPrizeEntity p WHERE p.hackathon_id = :hId")
-	List<HackathonPrizeEntity> findByHackathonId(@Param("hId") Integer hId);
+	//@Query("SELECT p FROM HackathonPrizeEntity p WHERE p.hackathon_id = :hId")
+	//List<HackathonPrizeEntity> findByHackathonId(@Param("hId") Integer hId);
+	
+	List<HackathonPrizeEntity> findByHackathonId(Integer hackathonId);
+
+	List<HackathonPrizeEntity> findByHackathonIdOrderByHackathonPrizeIdAsc(Integer hackathonId);
+
+
 
 }

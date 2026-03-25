@@ -45,8 +45,6 @@ public class HackathonTeamController {
 	        team.setHackathonId(hackathonId);
 	        team.setTeamLeaderId(user.getUserId());
 	        team.setTeamName(teamName);
-	        team.setMemberEmails(memberEmails);
-	        team.setTeamDescription(teamDescription);
 	        team.setTeamStatus("QUALIFY"); // or "ACTIVE" depending on your workflow
 
 	        hackathonTeamRepository.save(team);
@@ -72,10 +70,9 @@ public class HackathonTeamController {
 
 	        // 2. Fetch only the hackathons registered by this user
 	        // You will need to create this method in your Repository
-	        List<HackathonEntity> registeredHackathons = hackathonRepository.findRegistrationsByUserId(user.getUserId());
+	    
 
 	        // 3. Add the list to the model so the JSP can see it
-	        model.addAttribute("registeredHackathons", registeredHackathons);
 	    	return "/participant/MyHackathons";
 	    }
 	    

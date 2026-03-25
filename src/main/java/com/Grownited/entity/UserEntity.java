@@ -27,6 +27,10 @@ public class UserEntity {
 	private String profilePicURL;
 	private String otp;
 	private Boolean active;
+	private Boolean passwordResetRequired;
+	private String qualification;
+	private String designation;
+	private String organization;
 	
 	public Integer getUserId() {
 		return userId;
@@ -105,6 +109,31 @@ public class UserEntity {
 	}
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+	
+	public Boolean getPasswordResetRequired() {
+		return passwordResetRequired;
+	}
+	public void setPasswordResetRequired(Boolean passwordResetRequired) {
+		this.passwordResetRequired = passwordResetRequired;
+	}
+	public String getQualification() {
+		return qualification;
+	}
+	public void setQualification(String qualification) {
+		this.qualification = qualification;
+	}
+	public String getDesignation() {
+		return designation;
+	}
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+	public String getOrganization() {
+		return organization;
+	}
+	public void setOrganization(String organization) {
+		this.organization = organization;
 	}
 	
 	

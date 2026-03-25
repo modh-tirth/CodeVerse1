@@ -10,7 +10,17 @@ import com.Grownited.entity.HackathonTeamEntity;
 
 @Repository
 public interface HackathonTeamRepository extends JpaRepository<HackathonTeamEntity, Integer> {
+	//List<HackathonTeamEntity> findByTeamLeaderId(Integer teamLeaderId);
+	//Optional<HackathonTeamEntity> findByHackathonIdAndTeamLeaderId(Integer hackathonId, Integer teamLeaderId);
+	
+	boolean existsByHackathonIdAndTeamLeaderId(Integer hackathonId, Integer teamLeaderId);
+
+	long countByHackathonId(Integer hackathonId);
+
+	Optional<HackathonTeamEntity> findFirstByHackathonIdAndTeamLeaderId(Integer hackathonId, Integer teamLeaderId);
+
+	List<HackathonTeamEntity> findByHackathonId(Integer hackathonId);
+
 	List<HackathonTeamEntity> findByTeamLeaderId(Integer teamLeaderId);
-	Optional<HackathonTeamEntity> findByHackathonIdAndTeamLeaderId(Integer hackathonId, Integer teamLeaderId);
 	
 }

@@ -44,21 +44,44 @@
 </header>
 
 <style>
+    /* Global reset – ensure no unwanted spacing */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        max-width: 100vw;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Fixed Header */
     .participant-header {
+        position:sticky; 
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px; /* Consistent height */
+        z-index: 1000; 
         background: white;
-        padding: 12px 30px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        padding: 0 30px;
+        box-sizing: border-box;
         border-bottom: 1px solid #e9eef2;
         font-family: 'Inter', sans-serif;
-    }
+        padding-left:260;
+        }
     .header-left {
         display: flex;
         align-items: center;
         gap: 20px;
     }
+
     .menu-toggle-btn {
         background: transparent;
         border: none;
@@ -76,6 +99,7 @@
         background: #f1f5f9;
         color: #0f172a;
     }
+
     .header-right {
         display: flex;
         align-items: center;
@@ -87,11 +111,13 @@
         position: relative;
         cursor: pointer;
     }
+
     .user-profile {
         display: flex;
         align-items: center;
         gap: 10px;
     }
+
     .user-avatar {
         width: 40px;
         height: 40px;
@@ -104,6 +130,7 @@
         font-weight: 600;
         font-size: 1rem;
         overflow: hidden;
+        flex-shrink: 0;
     }
     .avatar-img {
         width: 100%;
@@ -120,6 +147,7 @@
         color: white;
         font-weight: 600;
     }
+
     .user-info {
         display: none;
     }
@@ -183,57 +211,70 @@
         background: #edf2f7;
         margin: 4px 0;
     }
-    
+
+    /* Mobile body lock */
+    body.mobile-menu-active {
+        overflow: hidden;
+        height: 100vh;
+    }
 </style>
 
 <script>
-const menuToggleBtn = document.getElementById('menuToggleBtn');
-const userDropdown = document.getElementById('userDropdown');
-const dropdownMenu = document.getElementById('dropdownMenu');
+    // Wait for DOM and sidebar (must be included before this header)
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggleBtn = document.getElementById('menuToggleBtn');
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const sidebar = document.getElementById('sidebar'); // defined in sidebar.jsp
 
-// Sidebar toggle logic – uses the globally defined 'sidebar' from the sidebar JSP
-if (menuToggleBtn) {
-    menuToggleBtn.addEventListener('click', () => {
-        if (typeof sidebar === 'undefined' || !sidebar) {
-            console.error('Sidebar element not found – check that sidebar is included and has id="sidebar"');
-            return;
+        if (menuToggleBtn) {
+            menuToggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!sidebar) return;
+
+                if (window.innerWidth <= 768) {
+                    // Mobile: toggle sidebar slide and body lock
+                    const isOpen = sidebar.classList.toggle('mobile-open');
+                    document.body.classList.toggle('mobile-menu-active', isOpen);
+                } else {
+                    // Desktop: toggle collapsed mode
+                    sidebar.classList.toggle('collapsed');
+                }
+            });
         }
-        if (window.innerWidth <= 768) {
-            sidebar.classList.toggle('mobile-open');
-        } else {
-            sidebar.classList.toggle('collapsed');
+
+        // Close dropdown when clicking outside
+        if (userDropdown) {
+            userDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
         }
+
+        // Global click: close dropdown and close mobile sidebar if outside
+        document.addEventListener('click', (e) => {
+            // Close dropdown if click outside userDropdown
+            if (userDropdown && !userDropdown.contains(e.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+
+            // Close mobile sidebar if open and click outside
+            if (window.innerWidth <= 768 && sidebar && sidebar.classList.contains('mobile-open')) {
+                if (!sidebar.contains(e.target) && !menuToggleBtn.contains(e.target)) {
+                    sidebar.classList.remove('mobile-open');
+                    document.body.classList.remove('mobile-menu-active');
+                }
+            }
+        });
+
+        // Reset on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                if (sidebar) {
+                    sidebar.classList.remove('mobile-open');
+                }
+                document.body.classList.remove('mobile-menu-active');
+            }
+        });
     });
-}
-
-// User dropdown toggle
-if (userDropdown) {
-    userDropdown.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dropdownMenu.classList.toggle('show');
-    });
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    if (userDropdown && !userDropdown.contains(e.target)) {
-        dropdownMenu.classList.remove('show');
-    }
-});
-
-// Close sidebar when clicking outside on mobile
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && sidebar && menuToggleBtn) {
-        if (!sidebar.contains(e.target) && !menuToggleBtn.contains(e.target)) {
-            sidebar.classList.remove('mobile-open');
-        }
-    }
-});
-
-// Ensure mobile-open is removed when resizing to desktop
-window.addEventListener('resize', () => {
-    if (window.innerWidth > 768 && sidebar) {
-        sidebar.classList.remove('mobile-open');
-    }
-});
 </script>
