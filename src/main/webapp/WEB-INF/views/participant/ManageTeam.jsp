@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Team | ${hackathon.title}</title>
-    <!-- Bootstrap 5 + Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -132,6 +131,10 @@
             background: #fee2e2;
             color: #dc2626;
         }
+        .status-expired {
+            background: #f1f5f9;
+            color: #475569;
+        }
         .form-control, .form-select {
             border-radius: 14px;
             border: 1px solid var(--gray-200);
@@ -160,6 +163,15 @@
         .btn-primary:hover {
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+        }
+        .btn-outline-primary {
+            border-radius: 40px;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            border-color: var(--primary);
         }
         .btn-danger {
             border-radius: 40px;
@@ -209,7 +221,6 @@
 <body>
 
 <div class="page-container fade-in-up">
-    <!-- Header -->
     <div class="team-header">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
@@ -227,63 +238,159 @@
         </div>
     </div>
 
-    <!-- Success/Error messages (including join request messages) -->
-    <c:if test="${success == 'memberInvited'}"><div class="alert alert-custom alert-success-custom">Invitation sent to participant. They must accept to join.</div></c:if>
-    <c:if test="${success == 'externalInvited'}"><div class="alert alert-custom alert-success-custom">External invite saved successfully.</div></c:if>
-    <c:if test="${success == 'memberRemoved'}"><div class="alert alert-custom alert-success-custom">Member removed from team successfully.</div></c:if>
-    <c:if test="${success == 'teamCreated'}"><div class="alert alert-custom alert-success-custom">Team created successfully. You are now team leader.</div></c:if>
-    <c:if test="${success == 'teamJoined'}"><div class="alert alert-custom alert-success-custom">You joined team successfully.</div></c:if>
-    <c:if test="${success == 'inviteAccepted'}"><div class="alert alert-custom alert-success-custom">Invitation accepted. You are now part of that team.</div></c:if>
-    <c:if test="${success == 'inviteRejected'}"><div class="alert alert-custom alert-success-custom">Invitation rejected.</div></c:if>
+    <!-- Messages area -->
+    <div id="alert-container">
+        <!-- Success messages -->
+        <c:if test="${success == 'memberInvited'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Invitation sent to participant. They must accept to join.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'externalInvited'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> External invite saved successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'memberRemoved'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Member removed from team successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'teamCreated'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Team created successfully. You are now team leader.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'teamJoined'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> You joined team successfully.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'inviteAccepted'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Invitation accepted. You are now part of that team.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'inviteRejected'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Invitation rejected.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'requestSent'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Your join request has been sent to the team leader.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'requestAccepted'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> You accepted the join request. The participant is now a team member.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'requestRejected'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> You rejected the join request.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${success == 'requestCancelled'}">
+            <div class="alert alert-custom alert-success-custom alert-dismissible fade show"><i class="fas fa-check-circle text-success me-2"></i> Your join request has been cancelled.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
 
-    <!-- New success messages for join requests -->
-    <c:if test="${success == 'joinRequestSent'}"><div class="alert alert-custom alert-success-custom">Your request to join the team has been sent to the team leader.</div></c:if>
-    <c:if test="${success == 'requestAccepted'}"><div class="alert alert-custom alert-success-custom">Join request accepted. Member added to team.</div></c:if>
-    <c:if test="${success == 'requestRejected'}"><div class="alert alert-custom alert-success-custom">Join request rejected.</div></c:if>
-
-    <!-- Existing error messages -->
-    <c:if test="${error == 'teamFull'}"><div class="alert alert-custom alert-danger-custom">Your team is full. You cannot add more members.</div></c:if>
-    <c:if test="${error == 'invalidUser'}"><div class="alert alert-custom alert-danger-custom">Selected user is invalid for team invite.</div></c:if>
-    <c:if test="${error == 'alreadyInHackathon'}"><div class="alert alert-custom alert-danger-custom">This participant is already part of a team in this hackathon.</div></c:if>
-    <c:if test="${error == 'invalidTeamName'}"><div class="alert alert-custom alert-danger-custom">Please enter valid team name.</div></c:if>
-    <c:if test="${error == 'invalidTeam'}"><div class="alert alert-custom alert-danger-custom">Selected team is invalid for this hackathon.</div></c:if>
-    <c:if test="${error == 'invalidEmail'}"><div class="alert alert-custom alert-danger-custom">Please enter a valid external email.</div></c:if>
-    <c:if test="${error == 'inviteExists'}"><div class="alert alert-custom alert-danger-custom">Pending invite already exists for this email.</div></c:if>
-    <c:if test="${error == 'inviteNotFound' || error == 'inviteInvalid'}"><div class="alert alert-custom alert-danger-custom">Invitation is invalid or no longer available.</div></c:if>
-    <c:if test="${error == 'submissionLocked'}"><div class="alert alert-custom alert-danger-custom">Submission is locked until registration period ends.</div></c:if>
-    <c:if test="${error == 'inviteClosed'}"><div class="alert alert-custom alert-danger-custom">Invitations are closed after registration end date.</div></c:if>
-    <c:if test="${error == 'notLeader'}"><div class="alert alert-custom alert-danger-custom">Only team leader can remove participants.</div></c:if>
-    <c:if test="${error == 'cannotRemoveLeader'}"><div class="alert alert-custom alert-danger-custom">Team leader cannot be removed from team.</div></c:if>
-    <c:if test="${error == 'memberNotFound'}"><div class="alert alert-custom alert-danger-custom">Selected member was not found in this team.</div></c:if>
+        <!-- Error messages -->
+        <c:if test="${error == 'teamFull'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Your team is full. You cannot add more members.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'invalidUser'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Selected user is invalid for team invite.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'alreadyInHackathon'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> This participant is already part of a team in this hackathon.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'invalidTeamName'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Please enter valid team name.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'invalidTeam'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Selected team is invalid for this hackathon.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'invalidEmail'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Please enter a valid external email.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'inviteExists'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Pending invite already exists for this email.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'inviteNotFound' || error == 'inviteInvalid'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Invitation is invalid or no longer available.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'submissionLocked'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Submission is locked until registration period ends.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'inviteClosed'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Invitations are closed after registration end date.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'notLeader'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Only team leader can remove participants.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'cannotRemoveLeader'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Team leader cannot be removed from team.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'memberNotFound'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> Selected member was not found in this team.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'requestExists'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> You already have a pending request for this team.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'invalidRequest'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> The join request is invalid or no longer exists.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'unauthorized'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> You are not authorized to cancel this request.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+        <c:if test="${error == 'alreadyInTeam'}">
+            <div class="alert alert-custom alert-danger-custom alert-dismissible fade show"><i class="fas fa-exclamation-triangle text-danger me-2"></i> This participant is already in a team.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        </c:if>
+    </div>
 
     <div class="row g-4">
-        <!-- Left column: Team members, invites, etc. -->
+        <!-- Left column -->
         <div class="col-lg-8">
-            <!-- Pending Invitation (when user has no team yet) -->
-           <c:if test="${not empty pendingInvites}">
-			    <h5>Team Invites</h5>
-			
-			    <c:forEach items="${pendingInvites}" var="invite">
-			        <div class="invite-box">
-			            <p>
-			                Team ID: ${invite.teamId} <br/>
-			                Invited By: ${invite.invitedBy}
-			            </p>
-			
-			            <!-- ACCEPT -->
-			            <form action="/participant/hackathon/${hackathon.hackathonId}/team/invite/${invite.hackathonTeamInviteId}/accept" method="post">
-			                <button type="submit">Accept</button>
-			            </form>
-			
-			            <!-- REJECT -->
-			            <form action="/participant/hackathon/${hackathon.hackathonId}/team/invite/${invite.hackathonTeamInviteId}/reject" method="post">
-			                <button type="submit">Reject</button>
-			            </form>
-			        </div>
-			    </c:forEach>
-			</c:if>
-
-            <!-- No team yet: Create or join -->
+            <!-- Pending Invitation Card (if any) -->
+          <c:if test="${not hasTeam and not empty pendingInvite}">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-envelope-open-text"></i> Pending Team Invitation</h5>
+        </div>
+        <div class="card-body-custom">
+            <p class="text-muted mb-3">
+                You have been invited to join
+                <strong>${pendingInviteTeam.teamName}</strong>.
+            </p>
+            <div class="d-flex gap-3">
+                <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/accept" method="post">
+                    <button type="submit" class="btn btn-primary">Accept</button>
+                </form>
+                <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/reject" method="post">
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</c:if>>
+              <!-- Join Requests (for leader) -->
+           <c:if test="${hasTeam and isTeamLeader and not empty joinRequests}">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-user-plus"></i> Join Requests</h5>
+        </div>
+        <div class="card-body-custom p-0">
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr><th>Participant</th><th>Requested On</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${joinRequests}" var="req">
+                            <tr>
+                                <td>
+                                    <c:set var="requester" value="${requesterMap[req.invitedUserId]}" />
+                                    ${requester.firstName} ${requester.lastName} (${requester.email})
+                                </td>
+                                <td>${req.createdAt}</td>
+                                <td>
+                                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/accept" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                                    </form>
+                                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/reject" method="post" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-danger">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</c:if>
+            <!-- No team yet: Show create/request options -->
             <c:if test="${not hasTeam}">
                 <div class="card-custom">
                     <div class="card-header-custom">
@@ -305,16 +412,16 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="border rounded-4 p-3 h-100 bg-light">
-                                    <h6 class="fw-bold mb-3"><i class="fas fa-handshake me-2 text-primary"></i>Join Existing Team</h6>
+                                    <h6 class="fw-bold mb-3"><i class="fas fa-handshake me-2 text-primary"></i>Request to Join Team</h6>
                                     <c:choose>
                                         <c:when test="${empty availableTeams}">
                                             <p class="text-muted text-center py-3">No open teams available to join right now.</p>
                                         </c:when>
                                         <c:otherwise>
-                                            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/join-existing" method="post">
+                                            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request-join" method="post">
                                                 <div class="mb-3">
                                                     <label class="form-label">Select Team</label>
-                                                    <select name="joinTeamId" class="form-select" required>
+                                                    <select name="requestTeamId" class="form-select" required>
                                                         <option value="">Choose team</option>
                                                         <c:forEach items="${availableTeams}" var="t">
                                                             <option value="${t.hackathonTeamId}">${t.teamName}</option>
@@ -323,6 +430,7 @@
                                                 </div>
                                                 <button type="submit" class="btn btn-primary w-100">Request to Join</button>
                                             </form>
+                                            <p class="text-muted small mt-2 mb-0"><i class="fas fa-info-circle"></i> Your request will be sent to the team leader.</p>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -335,7 +443,94 @@
                     </div>
                 </div>
             </c:if>
+			
+			<c:if test="${pendingInvite != null}">
+    <div class="alert alert-info">
+        You have been invited to join team:
+        <b>${pendingInviteTeam.teamName}</b>
 
+        <form method="post"
+              action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/accept">
+            <button type="submit" class="btn btn-success">Accept</button>
+        </form>
+
+        <form method="post"
+              action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite/${pendingInvite.hackathonTeamInviteId}/reject">
+            <button type="submit" class="btn btn-danger">Reject</button>
+        </form>
+    </div>
+</c:if>
+            <!-- Pending Join Requests (for participant) -->
+            <c:if test="${not hasTeam and not empty myPendingRequests}">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h5><i class="fas fa-clock"></i> Your Pending Join Requests</h5>
+                    </div>
+                    <div class="card-body-custom p-0">
+                        <div class="table-responsive">
+                            <table class="table table-custom mb-0">
+                                <thead>
+                                    <tr><th>Team</th><th>Status</th><th>Action</th></tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach items="${myPendingRequests}" var="req">
+                                        <c:set var="teamNameForReq" value="" />
+                                        <c:forEach items="${availableTeams}" var="t">
+                                            <c:if test="${t.hackathonTeamId == req.teamId}">
+                                                <c:set var="teamNameForReq" value="${t.teamName}" />
+                                            </c:if>
+                                        </c:forEach>
+                                        <tr>
+                                            <td>${teamNameForReq}</td>
+                                            <td><span class="status-badge status-pending">PENDING</span></td>
+                                            <td>
+                                                <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/cancel" method="post">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+<c:if test="${not hasTeam and not empty myPendingRequests}">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-clock"></i> Your Pending Join Requests</h5>
+        </div>
+        <div class="card-body-custom p-0">
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr><th>Team</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <c:forEach items="${myPendingRequests}" var="req">
+                            <c:set var="teamNameForReq" value="" />
+                            <c:forEach items="${availableTeams}" var="t">
+                                <c:if test="${t.hackathonTeamId == req.teamId}">
+                                    <c:set var="teamNameForReq" value="${t.teamName}" />
+                                </c:if>
+                            </c:forEach>
+                            <tr>
+                                <td>${teamNameForReq}</td>
+                                <td><span class="status-badge status-pending">PENDING</span></td>
+                                <td>
+                                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/cancel" method="post">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</c:if>
             <!-- Existing team: Show members -->
             <c:if test="${hasTeam}">
                 <div class="card-custom">
@@ -346,7 +541,7 @@
                         <div class="table-responsive">
                             <table class="table table-custom mb-0">
                                 <thead>
-                                    <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th> </tr>
+                                    <tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th></tr>
                                 </thead>
                                 <tbody>
                                     <c:forEach items="${teamMembers}" var="m" varStatus="i">
@@ -390,7 +585,9 @@
                     <div class="card-body-custom p-0">
                         <div class="table-responsive">
                             <table class="table table-custom mb-0">
-                                <thead><tr><th>Type</th><th>Invitee</th><th>Status</th><th>Sent On</th></tr></thead>
+                                <thead>
+                                    <tr><th>Type</th><th>Invitee</th><th>Status</th><th>Sent On</th></tr>
+                                </thead>
                                 <tbody>
                                     <c:if test="${empty inviteList}">
                                         <tr><td colspan="4" class="text-center text-muted py-4">No invites yet.</td></tr>
@@ -405,8 +602,8 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <span class="status-badge 
-                                                    ${i.inviteStatus == 'PENDING' ? 'status-pending' : 
+                                                <span class="status-badge
+                                                    ${i.inviteStatus == 'PENDING' ? 'status-pending' :
                                                       i.inviteStatus == 'ACCEPTED' ? 'status-accepted' :
                                                       i.inviteStatus == 'REJECTED' ? 'status-rejected' : 'status-expired'}">
                                                     ${i.inviteStatus}
@@ -421,98 +618,50 @@
                     </div>
                 </div>
             </c:if>
+
+            
         </div>
 
         <!-- Right column: Invite options (sticky) -->
         <div class="col-lg-4">
             <div class="sticky-sidebar">
-                <!-- Join Requests Section (for team leader) -->
-                <c:if test="${hasTeam and isTeamLeader}">
-                    <div class="card-custom">
-                        <div class="card-header-custom">
-                            <h5><i class="fas fa-user-clock"></i> Join Requests</h5>
-                        </div>
-                        <div class="card-body-custom">
-                            <c:if test="${empty joinRequests}">
-                                <p class="text-muted text-center mb-0">No join requests.</p>
-                            </c:if>
-                            <c:forEach items="${joinRequests}" var="req">
-                                <div class="d-flex justify-content-between align-items-center border rounded-3 p-3 mb-3">
-                                    <div>
-                                        <i class="fas fa-user me-2 text-primary"></i>
-                                        <strong>${req.invitedEmail != null ? req.invitedEmail : 'User #' + req.invitedUserId}</strong>
-                                    </div>
-                                    <div class="d-flex gap-2">
-                                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/accept" method="post">
-                                            <button class="btn btn-sm btn-success btn-sm-icon">
-                                                <i class="fas fa-check"></i> Accept
-                                            </button>
-                                        </form>
-                                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/reject" method="post">
-                                            <button class="btn btn-sm btn-danger btn-sm-icon">
-                                                <i class="fas fa-times"></i> Reject
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </c:forEach>
-                        </div>
+              <c:if test="${hasTeam and isTeamLeader}">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-user-plus"></i> Invite Members</h5>
+        </div>
+        <div class="card-body-custom">
+            <c:choose>
+                <c:when test="${inviteAllowed}">
+                    <div class="mb-4">
+                        <h6>Registered Participants</h6>
+                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite-member" method="post">
+                            <select name="invitedUserId" class="form-select" required>
+                                <option value="">Choose participant</option>
+                                <c:forEach items="${participantUsers}" var="u">
+                                    <option value="${u.userId}">${u.firstName} ${u.lastName} - ${u.email}</option>
+                                </c:forEach>
+                            </select>
+                            <button type="submit" class="btn btn-primary mt-2 w-100">Send Invite</button>
+                        </form>
                     </div>
-                </c:if>
-
-                <!-- Invite Members Section (for team leader) -->
-                <c:if test="${hasTeam and isTeamLeader}">
-                    <div class="card-custom">
-                        <div class="card-header-custom">
-                            <h5><i class="fas fa-user-plus"></i> Invite Members</h5>
-                        </div>
-                        <div class="card-body-custom">
-                            <c:choose>
-                                <c:when test="${inviteAllowed}">
-                                    <div class="mb-4">
-                                        <h6 class="fw-semibold mb-3"><i class="fas fa-user-check me-2 text-primary"></i>Registered Participants</h6>
-                                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite-member" method="post">
-                                            <div class="mb-3">
-                                                <label class="form-label">Select participant</label>
-                                                <select name="invitedUserId" class="form-select" required>
-                                                    <option value="">Choose participant</option>
-                                                    <c:forEach items="${participantUsers}" var="u">
-                                                        <option value="${u.userId}">${u.firstName} ${u.lastName} - ${u.email}</option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary w-100">Send Invite</button>
-                                            <p class="text-muted small mt-2 mb-0"><i class="fas fa-info-circle"></i> Invite goes to pending state until participant accepts.</p>
-                                        </form>
-                                    </div>
-                                    <div class="divider"></div>
-                                    <div>
-                                        <h6 class="fw-semibold mb-3"><i class="fas fa-envelope me-2 text-primary"></i>External User</h6>
-                                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite-external" method="post">
-                                            <div class="mb-3">
-                                                <label class="form-label">External email</label>
-                                                <input type="email" name="externalEmail" class="form-control" placeholder="name@example.com" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Role title</label>
-                                                <input type="text" name="roleTitle" class="form-control" placeholder="MEMBER">
-                                            </div>
-                                            <button type="submit" class="btn btn-primary w-100">Send External Invite</button>
-                                            <p class="text-muted small mt-2 mb-0"><i class="fas fa-info-circle"></i> External invite stored as pending until accepted manually.</p>
-                                        </form>
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="alert alert-warning mb-0">
-                                        <i class="fas fa-lock me-2"></i> Invitations are disabled because registration has ended.
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                        </div>
+                    <div class="divider"></div>
+                    <div>
+                        <h6>External User</h6>
+                        <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/invite-external" method="post">
+                            <input type="email" name="externalEmail" class="form-control" placeholder="name@example.com" required>
+                            <input type="text" name="roleTitle" class="form-control mt-2" placeholder="Role (optional)">
+                            <button type="submit" class="btn btn-primary mt-2 w-100">Send External Invite</button>
+                        </form>
                     </div>
-                </c:if>
-
-                <!-- Message for non-leader team members -->
+                </c:when>
+                <c:otherwise>
+                    <div class="alert alert-warning">Invitations are closed after registration end date.</div>
+                </c:otherwise>
+            </c:choose>
+        </div>
+    </div>
+</c:if>
                 <c:if test="${hasTeam and not isTeamLeader}">
                     <div class="card-custom">
                         <div class="card-header-custom">

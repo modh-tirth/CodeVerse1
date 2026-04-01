@@ -459,6 +459,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
+								    <label>
+								        <input type="checkbox" name="leaderboardPublished" value="true" 
+								               ${hackathon.leaderboardPublished ? 'checked' : ''} />
+								        <i class="fas fa-chart-line"></i> Publish Leaderboard (visible to participants)
+								    </label>
+								    <small class="text-muted d-block">Only when hackathon status is COMPLETE/COMPLETED.</small>
+								</div>
+                            <div class="form-group">
                                 <label>Event Type</label>
                                 <div class="input-group">
                                     <span class="input-group-icon"><i class="fas fa-globe"></i></span>

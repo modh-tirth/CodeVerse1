@@ -22,7 +22,8 @@ import java.util.List;
 public interface HackathonRepository extends JpaRepository<HackathonEntity, Integer> {
      
 	    long countByStatus(String status);
-	   
-
+	    
+	    
+	 
 	    
 }

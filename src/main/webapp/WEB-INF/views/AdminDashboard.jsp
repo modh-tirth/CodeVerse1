@@ -635,23 +635,8 @@
                     </div>
                 </div>
 
-                <!-- New Charts Row 2 -->
-                <div class="chart-grid">
-                    <!-- Line Chart: Registrations Over Time -->
-                    <div class="chart-card">
-                        <h4><i class="fas fa-chart-line"></i> Registrations Over Time</h4>
-                        <div class="chart-container">
-                            <canvas id="registrationsChart"></canvas>
-                        </div>
-                    </div>
-                    <!-- Horizontal Bar Chart: Top Hackathons by Participants -->
-                    <div class="chart-card">
-                        <h4><i class="fas fa-ranking-star"></i> Top Hackathons by Participants</h4>
-                        <div class="chart-container">
-                            <canvas id="topHackathonsChart"></canvas>
-                        </div>
-                    </div>
-                </div>
+           
+                   
 
                 <!-- Pending Approvals Table (unchanged) -->
                 <!-- div class="table-card">

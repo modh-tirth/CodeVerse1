@@ -366,25 +366,7 @@
                 <span class="badge bg-primary fs-6" id="resultsCount">${hackathons.size()} Events Found</span>
             </div>
 
-            <!-- Stats Cards (static demo values, active count updated by JS) -->
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-number" id="activeEventsCount">0</div>
-                    <div class="stat-label">Active Events</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">₹4.2Cr</div>
-                    <div class="stat-label">Prize Pool</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">18K+</div>
-                    <div class="stat-label">Participants</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">95%</div>
-                    <div class="stat-label">Free Entry</div>
-                </div>
-            </div>
+            
 
             <!-- Filter Panel -->
             <div class="filter-panel">

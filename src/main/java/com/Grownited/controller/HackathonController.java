@@ -98,9 +98,13 @@ public class HackathonController {
 				@RequestParam(required = false) String prizeTitle3,
 				@RequestParam(required = false) String prizeDescription3,
 				 @RequestParam("userTypeId") Integer userTypeId,
+				// @RequestParam(value = "leaderboardPublished", required = false) String leaderboardPublishedParam,
 				 MultipartFile hackathonPoster) {
 			if (hackathonEntity.getLeaderboardPublished() == null) {
 				hackathonEntity.setLeaderboardPublished(false);
+			}
+			if ("COMPLETED".equalsIgnoreCase(hackathonEntity.getStatus())) {
+			    hackathonEntity.setLeaderboardPublished(true);
 			}
 			UserEntity currentLogInUser = (UserEntity) session.getAttribute("user");
 			if (currentLogInUser != null) {
@@ -121,6 +125,8 @@ public class HackathonController {
 			        Optional<UserTypeEntity> ut = userTypeRepository.findById(userTypeId);
 			        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
 			    }
+			//  hackathonEntity.setLeaderboardPublished("on".equals(leaderboardPublishedParam));
+			  
 			hackathonRepository.save(hackathonEntity);
 			Integer hackathonId = hackathonEntity.getHackathonId();
 
@@ -256,13 +262,18 @@ public class HackathonController {
 				@RequestParam(required = false) Integer prizeId3,
 				@RequestParam(required = false) String prizeTitle3,
 				@RequestParam(required = false) String prizeDescription3,
+			//	 @RequestParam(value = "leaderboardPublished", required = false) String leaderboardPublishedParam,
+					
 				@RequestParam("userTypeId") Integer userTypeId,  
 				 MultipartFile hackathonPoster) {
 			Optional<HackathonEntity> existing = hackathonRepository.findById(hackathonEntity.getHackathonId());
 			if (hackathonEntity.getLeaderboardPublished() == null && existing.isPresent()) {
 				hackathonEntity.setLeaderboardPublished(existing.get().getLeaderboardPublished());
 			}
-
+			
+			if ("COMPLETED".equalsIgnoreCase(hackathonEntity.getStatus())) {
+			    hackathonEntity.setLeaderboardPublished(true);
+			}
 			if (hackathonEntity.getUserId() == null) {
 				UserEntity currentLogInUser = (UserEntity) session.getAttribute("user");
 				if (currentLogInUser != null) {
@@ -283,7 +294,8 @@ public class HackathonController {
 		        Optional<UserTypeEntity> ut = userTypeRepository.findById(userTypeId);
 		        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
 		    }
-
+		    
+		 //   hackathonEntity.setLeaderboardPublished("on".equals(leaderboardPublishedParam));
 			hackathonRepository.save(hackathonEntity);
 
 			Integer hackathonId = hackathonEntity.getHackathonId();

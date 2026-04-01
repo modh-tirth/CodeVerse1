@@ -43,6 +43,8 @@ public class AdminController {
 	        model.addAttribute("totalParticipants",totalParticipants);
 	        model.addAttribute("totalJudges",totalJudges);
 	        model.addAttribute("totalAdmins",totalAdmins);
+	        
+	        
 	        return "AdminDashboard"; // Maps to /WEB-INF/views/admin-dashboard.jsp
 	    }
 	 

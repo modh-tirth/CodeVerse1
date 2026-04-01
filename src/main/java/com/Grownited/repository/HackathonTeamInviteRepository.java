@@ -1,5 +1,6 @@
 package com.Grownited.repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,29 @@ public interface HackathonTeamInviteRepository extends JpaRepository<HackathonTe
 	    Integer userId,
 	    String status,
 	    List<String> inviteTypes);
+	
+	Optional<HackathonTeamInviteEntity>
+	findFirstByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteType(
+	    Integer hackathonId,
+	    Integer invitedUserId,
+	    String inviteStatus,
+	    String inviteType
+	);
 
 	List<HackathonTeamInviteEntity> findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteTypeIn(Integer hackathonId,
 			Integer userId, String string, List<String> of);
+	// Check if a specific type of pending request exists
+	boolean existsByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteType(
+	    Integer hackathonId, Integer invitedUserId, String inviteStatus, String inviteType);
+
+	// Get pending requests made by a participant (type REQUEST)
+	List<HackathonTeamInviteEntity> findByHackathonIdAndInvitedUserIdAndInviteStatusAndInviteType(
+	    Integer hackathonId, Integer invitedUserId, String inviteStatus, String inviteType);
+
+
+	List<HackathonTeamInviteEntity> findByHackathonIdAndInviteStatus(Integer hackathonId, String inviteStatus);
+
+	Optional<HackathonTeamInviteEntity> findFirstByHackathonIdAndInvitedEmailAndInviteStatus(
+		    Integer hackathonId, String invitedEmail, String inviteStatus);
+
 }
