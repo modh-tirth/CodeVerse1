@@ -2,6 +2,8 @@ package com.Grownited.controller.participant;
 
 import com.Grownited.entity.*;
 import com.Grownited.repository.*;
+import com.Grownited.service.PaymentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,6 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import net.authorize.api.contract.v1.ANetApiResponse;
+import net.authorize.api.contract.v1.CreateTransactionResponse;
+import net.authorize.api.contract.v1.MessageTypeEnum;
+import net.authorize.api.contract.v1.TransactionResponse;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -51,6 +57,11 @@ public class ParticipantController {
     @Autowired
     private UserDetailRepository userDetailRepository;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+    
+    @Autowired
+    PaymentService paymentService;
     // ==================== PARTICIPANT DASHBOARD ====================
 
     @GetMapping("/participant/home")
@@ -72,6 +83,51 @@ public class ParticipantController {
         List<HackathonPrizeEntity> prizes = hackathonPrizeRepository.findByHackathonId(hackathonId);
         model.addAttribute("prizes", prizes);
         model.addAttribute("today", LocalDate.now());
+        List<HackathonPrizeEntity> prize = hackathonPrizeRepository.findByHackathonIdOrderByHackathonPrizeIdAsc(hackathonId);
+        System.out.println("Hackathon " + hackathonId + " -> prizeList size = " + prizes.size());
+        model.addAttribute("prizeList", prize);
+        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+		if (opHackathon.isEmpty()) {
+			return "redirect:/participant/home";
+		}
+
+	
+		Optional<HackathonDescriptionEntity> description = hackathonDescriptionRepository.findFirstByHackathonId(hackathonId);
+		UserEntity user = (UserEntity) session.getAttribute("user");
+
+		LocalDate today = LocalDate.now();
+		boolean registrationOpen = hackathon.getRegistrationStartDate() != null && hackathon.getRegistrationEndDate() != null
+				&& !today.isBefore(hackathon.getRegistrationStartDate()) && !today.isAfter(hackathon.getRegistrationEndDate());
+
+		boolean alreadyRegistered = false;
+		boolean alreadyInTeam = false;
+		Integer teamId = null;
+		HackathonTeamInviteEntity pendingInvite = null;
+		if (user != null) {
+			alreadyRegistered = hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId());
+			alreadyInTeam = hackathonTeamRepository.existsByHackathonIdAndTeamLeaderId(hackathonId, user.getUserId())
+					|| hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, user.getUserId());
+			teamId = findTeamIdForUser(hackathonId, user.getUserId());
+			pendingInvite = hackathonTeamInviteRepository
+					.findFirstByHackathonIdAndInvitedUserIdAndInviteStatus(hackathonId, user.getUserId(), "PENDING")
+					.orElse(null);
+		}
+
+		model.addAttribute("hackathon", hackathon);
+		model.addAttribute("hackathonDescription", description.orElse(null));
+		model.addAttribute("prizeList", prizes);
+		model.addAttribute("registrationOpen", registrationOpen);
+		model.addAttribute("alreadyRegistered", alreadyRegistered);
+		model.addAttribute("alreadyInTeam", alreadyInTeam);
+		model.addAttribute("canJoin", user != null && registrationOpen && !alreadyRegistered);
+		model.addAttribute("pendingInvite", pendingInvite);
+		model.addAttribute("teamId", teamId);
+		model.addAttribute("teamCount", hackathonTeamRepository.countByHackathonId(hackathonId));
+	
+		boolean completed = "COMPLETE".equalsIgnoreCase(hackathon.getStatus())
+				|| "COMPLETED".equalsIgnoreCase(hackathon.getStatus());
+		model.addAttribute("leaderboardAvailable", completed && Boolean.TRUE.equals(hackathon.getLeaderboardPublished()));
+	
         return "participant/ViewHackathons";
     }
 
@@ -248,7 +304,12 @@ public class ParticipantController {
         boolean completed = "COMPLETE".equalsIgnoreCase(hackathon.getStatus())
                 || "COMPLETED".equalsIgnoreCase(hackathon.getStatus());
         boolean leaderboardAvailable = completed && Boolean.TRUE.equals(hackathon.getLeaderboardPublished());
-
+        
+        boolean hasPaid = false;
+        if (user != null && hackathon.getPayment().equalsIgnoreCase("PAID")) {
+            hasPaid = paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId, user.getUserId(), "SUCCESS").isPresent();
+        }
+        model.addAttribute("hasPaid", hasPaid);
         model.addAttribute("hackathon", hackathon);
         model.addAttribute("hackathonDescription", description.orElse(null));
         model.addAttribute("prizeList", prizes);
@@ -929,6 +990,72 @@ public class ParticipantController {
         hackathonSubmissionRepository.save(submission);
 
         return "redirect:/participant/hackathon/" + hackathonId + "/submission?success=saved";
+    }
+    
+    @GetMapping("participant/hackathon/{hackathonId}/pay")
+    public String showPaymentForm(@PathVariable Integer hackathonId, Model model, HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+        if (opHackathon.isEmpty()) return "redirect:/participant/home";
+
+        HackathonEntity hackathon = opHackathon.get();
+        // Check if already paid
+        if (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId, user.getUserId(), "SUCCESS").isPresent()) {
+            return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid";
+        }
+        model.addAttribute("hackathon", hackathon);
+        return "participant/ParticipantPayment";
+    }
+
+    @PostMapping("participant/hackathon/{hackathonId}/pay/process")
+    @Transactional
+    public String processPayment(@PathVariable Integer hackathonId,
+                                 @RequestParam String cardNumber,
+                                 @RequestParam String expMonth,
+                                 @RequestParam String expYear,
+                                 @RequestParam String cvv,
+                                 HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user == null) return "redirect:/login";
+
+        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+        if (opHackathon.isEmpty()) return "redirect:/participant/home";
+
+        HackathonEntity hackathon = opHackathon.get();
+
+        // Call payment service
+        String expiredDate = expMonth + expYear; // format as expected by Authorize.net
+        Double amount = hackathon.getRegistrationFee();
+        ANetApiResponse response = paymentService.chargeCreditCard(user.getEmail(), cardNumber, expiredDate, amount);
+
+        // Process response
+        if (response != null && response.getMessages().getResultCode() == MessageTypeEnum.OK) {
+            CreateTransactionResponse trResponse = (CreateTransactionResponse) response;
+            TransactionResponse result = trResponse.getTransactionResponse();
+            if (result.getMessages() != null) {
+                // Payment successful – save payment record
+                PaymentEntity payment = new PaymentEntity();
+                payment.setHackathonId(hackathonId);
+                payment.setUserId(user.getUserId());
+                payment.setAmount(amount);
+                payment.setGateway("AUTHORIZE.NET");
+                payment.setPaymentDate(LocalDate.now());
+                payment.setPaymentGatewayAuthCode(result.getAuthCode());
+                payment.setPaymentGatewayTransactionId(result.getTransId());
+                payment.setPaymentMode("CARD");
+                payment.setPaymentStatus("SUCCESS");
+                paymentRepository.save(payment);
+
+                // Register user for hackathon (if not already)
+                ensureParticipantRegistration(hackathonId, user.getUserId());
+
+                return "redirect:/participant/hackathon/" + hackathonId + "?success=paymentSuccess";
+            }
+        }
+        // Payment failed
+        return "redirect:/participant/hackathon/" + hackathonId + "/pay?error=paymentFailed";
     }
 
     // ==================== UTILITIES ====================

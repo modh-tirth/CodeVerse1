@@ -501,6 +501,13 @@
                                 </div>
                             </div>
                             <div class="form-group">
+								    <label>Registration Fee (₹)</label>
+								    <div class="input-group">
+								        <span class="input-group-icon"><i class="fas fa-rupee-sign"></i></span>
+								        <input type="number" name="registrationFee" step="0.01" min="0" value="0" placeholder="e.g., 100">
+								    </div>
+								</div>
+                            <div class="form-group">
                                 <label>Registration End</label>
                                 <div class="input-group">
                                     <span class="input-group-icon"><i class="fas fa-calendar-xmark"></i></span>

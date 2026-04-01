@@ -459,14 +459,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-								    <label>
-								        <input type="checkbox" name="leaderboardPublished" value="true" 
-								               ${hackathon.leaderboardPublished ? 'checked' : ''} />
-								        <i class="fas fa-chart-line"></i> Publish Leaderboard (visible to participants)
-								    </label>
-								    <small class="text-muted d-block">Only when hackathon status is COMPLETE/COMPLETED.</small>
-								</div>
-                            <div class="form-group">
                                 <label>Event Type</label>
                                 <div class="input-group">
                                     <span class="input-group-icon"><i class="fas fa-globe"></i></span>
@@ -491,6 +483,13 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+							    <label>Registration Fee (₹)</label>
+							    <div class="input-group">
+							        <span class="input-group-icon"><i class="fas fa-rupee-sign"></i></span>
+							        <input type="number" name="registrationFee" step="0.01" min="0" value="${hackathon.registrationFee}" placeholder="e.g., 100">
+							    </div>
+							</div>
                             <div class="form-group">
                                 <label>Location / Venue</label>
                                 <div class="input-group">

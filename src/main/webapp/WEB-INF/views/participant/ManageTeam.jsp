@@ -333,7 +333,7 @@
         <!-- Left column -->
         <div class="col-lg-8">
             <!-- Pending Invitation Card (if any) -->
-          <c:if test="${not hasTeam and not empty pendingInvite}">
+         <%--  <c:if test="${not hasTeam and not empty pendingInvite}">
     <div class="card-custom">
         <div class="card-header-custom">
             <h5><i class="fas fa-envelope-open-text"></i> Pending Team Invitation</h5>
@@ -353,7 +353,7 @@
             </div>
         </div>
     </div>
-</c:if>>
+</c:if>> --%>
               <!-- Join Requests (for leader) -->
            <c:if test="${hasTeam and isTeamLeader and not empty joinRequests}">
     <div class="card-custom">
@@ -444,7 +444,7 @@
                 </div>
             </c:if>
 			
-			<c:if test="${pendingInvite != null}">
+			<%-- <c:if test="${pendingInvite != null}">
     <div class="alert alert-info">
         You have been invited to join team:
         <b>${pendingInviteTeam.teamName}</b>
@@ -459,7 +459,7 @@
             <button type="submit" class="btn btn-danger">Reject</button>
         </form>
     </div>
-</c:if>
+</c:if> --%>
             <!-- Pending Join Requests (for participant) -->
             <c:if test="${not hasTeam and not empty myPendingRequests}">
                 <div class="card-custom">
@@ -496,41 +496,7 @@
                     </div>
                 </div>
             </c:if>
-<c:if test="${not hasTeam and not empty myPendingRequests}">
-    <div class="card-custom">
-        <div class="card-header-custom">
-            <h5><i class="fas fa-clock"></i> Your Pending Join Requests</h5>
-        </div>
-        <div class="card-body-custom p-0">
-            <div class="table-responsive">
-                <table class="table table-custom mb-0">
-                    <thead>
-                        <tr><th>Team</th><th>Status</th><th>Action</th></tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach items="${myPendingRequests}" var="req">
-                            <c:set var="teamNameForReq" value="" />
-                            <c:forEach items="${availableTeams}" var="t">
-                                <c:if test="${t.hackathonTeamId == req.teamId}">
-                                    <c:set var="teamNameForReq" value="${t.teamName}" />
-                                </c:if>
-                            </c:forEach>
-                            <tr>
-                                <td>${teamNameForReq}</td>
-                                <td><span class="status-badge status-pending">PENDING</span></td>
-                                <td>
-                                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/team/request/${req.hackathonTeamInviteId}/cancel" method="post">
-                                        <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</c:if>
+
             <!-- Existing team: Show members -->
             <c:if test="${hasTeam}">
                 <div class="card-custom">
@@ -626,7 +592,7 @@
         <div class="col-lg-4">
             <div class="sticky-sidebar">
               <c:if test="${hasTeam and isTeamLeader}">
-    <div class="card-custom">
+           <div class="card-custom">
         <div class="card-header-custom">
             <h5><i class="fas fa-user-plus"></i> Invite Members</h5>
         </div>
@@ -662,7 +628,7 @@
         </div>
     </div>
 </c:if>
-                <c:if test="${hasTeam and not isTeamLeader}">
+                <%-- <c:if test="${hasTeam and not isTeamLeader}">
                     <div class="card-custom">
                         <div class="card-header-custom">
                             <h5><i class="fas fa-user-plus"></i> Invite Members</h5>
@@ -672,7 +638,7 @@
                             <p class="text-muted">Only the team leader can send invitations.</p>
                         </div>
                     </div>
-                </c:if>
+                </c:if> --%>
             </div>
         </div>
     </div>

@@ -325,6 +325,48 @@
                             </c:otherwise>
                         </c:choose>
                     </c:when>
+                    <%-- Inside the registration open block --%>
+<c:when test="${hackathon.status eq 'UPCOMING' or hackathon.status eq 'LIVE'}">
+    <c:choose>
+        <%-- Already registered --%>
+        <c:when test="${alreadyRegistered}">
+            ...
+        </c:when>
+
+        <%-- Pending invitation --%>
+        <c:when test="${not empty pendingInvite}">
+            ...
+        </c:when>
+
+        <%-- Paid hackathon and not registered yet --%>
+        <c:when test="${hackathon.payment eq 'PAID'}">
+            <c:choose>
+                <c:when test="${hasPaid}">
+                    <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
+                            <i class="fas fa-pen me-2"></i> Join Hackathon (Already Paid)
+                        </button>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/pay" 
+                       class="btn btn-warning w-100 py-2 fw-bold shadow">
+                        <i class="fas fa-credit-card me-2"></i> Pay ₹ ${hackathon.registrationFee} and Register
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </c:when>
+
+        <%-- Free hackathon --%>
+        <c:otherwise>
+            <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/join" method="post">
+                <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow">
+                    <i class="fas fa-pen me-2"></i> Join Hackathon
+                </button>
+            </form>
+        </c:otherwise>
+    </c:choose>
+</c:when>
 
                     <%-- Hackathon is completed or expired (no registration) --%>
                     <c:otherwise>

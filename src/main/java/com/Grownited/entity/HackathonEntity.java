@@ -31,6 +31,7 @@ public class HackathonEntity {
 	private LocalDate registrationEndDate;
 	Boolean leaderboardPublished;
 	private Integer userId;
+	private Double registrationFee;
 	
 	public Integer getHackathonId() {
 		return hackathonId;
@@ -122,5 +123,12 @@ public class HackathonEntity {
 	public void setLeaderboardPublished(Boolean leaderboardPublished) {
 		this.leaderboardPublished = leaderboardPublished;
 	}
+	public Double getRegistrationFee() {
+		return registrationFee;
+	}
+	public void setRegistrationFee(Double registrationFee) {
+		this.registrationFee = registrationFee;
+	}
+	
 	
 }

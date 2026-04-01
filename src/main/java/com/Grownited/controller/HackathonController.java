@@ -98,6 +98,7 @@ public class HackathonController {
 				@RequestParam(required = false) String prizeTitle3,
 				@RequestParam(required = false) String prizeDescription3,
 				 @RequestParam("userTypeId") Integer userTypeId,
+				 @RequestParam(required = false) Double registrationFee,
 				// @RequestParam(value = "leaderboardPublished", required = false) String leaderboardPublishedParam,
 				 MultipartFile hackathonPoster) {
 			if (hackathonEntity.getLeaderboardPublished() == null) {
@@ -126,7 +127,7 @@ public class HackathonController {
 			        ut.ifPresent(u -> hackathonEntity.setUserType(u.getUserType()));
 			    }
 			//  hackathonEntity.setLeaderboardPublished("on".equals(leaderboardPublishedParam));
-			  
+			  hackathonEntity.setRegistrationFee(registrationFee);  
 			hackathonRepository.save(hackathonEntity);
 			Integer hackathonId = hackathonEntity.getHackathonId();
 
