@@ -986,71 +986,140 @@ public class ParticipantController {
         return handleInvitationResponse(hackathonId, inviteId, session, false, true);
     }
 
+	/*
+	 * private String handleInvitationResponse(Integer hackathonId, Integer
+	 * inviteId, HttpSession session, boolean accept, boolean redirectToTeamPage) {
+	 * UserEntity user = (UserEntity) session.getAttribute("user"); if (user ==
+	 * null) return "redirect:/login";
+	 * 
+	 * String basePath = "redirect:/participant/hackathon/" + hackathonId; if
+	 * (redirectToTeamPage) basePath += "/team";
+	 * 
+	 * Optional<HackathonTeamInviteEntity> opInvite =
+	 * hackathonTeamInviteRepository.findById(inviteId); if (opInvite.isEmpty())
+	 * return basePath + "?error=inviteNotFound";
+	 * 
+	 * HackathonTeamInviteEntity invite = opInvite.get(); if
+	 * (!"PENDING".equals(invite.getInviteStatus()) || invite.getHackathonId() ==
+	 * null || !invite.getHackathonId().equals(hackathonId)) { return basePath +
+	 * "?error=inviteInvalid"; }
+	 * 
+	 * // For external invites, link user if needed if (invite.getInvitedUserId() ==
+	 * null && invite.getInvitedEmail() != null &&
+	 * invite.getInvitedEmail().equalsIgnoreCase(user.getEmail())) {
+	 * invite.setInvitedUserId(user.getUserId());
+	 * hackathonTeamInviteRepository.save(invite); }
+	 * 
+	 * // Ensure invite belongs to this user if (invite.getInvitedUserId() != null
+	 * && !invite.getInvitedUserId().equals(user.getUserId())) { return basePath +
+	 * "?error=inviteInvalid"; }
+	 * 
+	 * if (!accept) { invite.setInviteStatus("REJECTED");
+	 * hackathonTeamInviteRepository.save(invite); return basePath +
+	 * "?success=inviteRejected"; }
+	 * 
+	 * // Already in a team? if
+	 * (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId,
+	 * user.getUserId())) { invite.setInviteStatus("REJECTED");
+	 * hackathonTeamInviteRepository.save(invite); return basePath +
+	 * "?error=alreadyInHackathon"; }
+	 * 
+	 * Optional<HackathonEntity> opHackathon =
+	 * hackathonRepository.findById(hackathonId); if (opHackathon.isEmpty()) return
+	 * "redirect:/participant/home"; ensureParticipantRegistration(hackathonId,
+	 * user.getUserId());
+	 * 
+	 * long teamSize =
+	 * hackathonTeamMemberRepository.countByTeamId(invite.getTeamId()); Integer
+	 * maxSize = opHackathon.get().getMaxTeamSize(); if (maxSize != null && teamSize
+	 * >= maxSize) { return basePath + "?error=teamFull"; }
+	 * 
+	 * // Add to team HackathonTeamMembersEntity member = new
+	 * HackathonTeamMembersEntity(); member.setTeamId(invite.getTeamId());
+	 * member.setHackathonId(hackathonId); member.setMemberId(user.getUserId());
+	 * member.setRoleTitle(StringUtils.hasText(invite.getRoleTitle()) ?
+	 * invite.getRoleTitle() : "MEMBER");
+	 * hackathonTeamMemberRepository.save(member);
+	 * 
+	 * invite.setInviteStatus("ACCEPTED");
+	 * hackathonTeamInviteRepository.save(invite); return basePath +
+	 * "?success=inviteAccepted"; }
+	 */
+    
     private String handleInvitationResponse(Integer hackathonId, Integer inviteId, HttpSession session,
-                                            boolean accept, boolean redirectToTeamPage) {
-        UserEntity user = (UserEntity) session.getAttribute("user");
-        if (user == null) return "redirect:/login";
+            boolean accept, boolean redirectToTeamPage) {
+UserEntity user = (UserEntity) session.getAttribute("user");
+if (user == null) return "redirect:/login";
 
-        String basePath = "redirect:/participant/hackathon/" + hackathonId;
-        if (redirectToTeamPage) basePath += "/team";
+String basePath = "redirect:/participant/hackathon/" + hackathonId;
+if (redirectToTeamPage) basePath += "/team";
 
-        Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
-        if (opInvite.isEmpty()) return basePath + "?error=inviteNotFound";
+Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
+if (opInvite.isEmpty()) return basePath + "?error=inviteNotFound";
 
-        HackathonTeamInviteEntity invite = opInvite.get();
-        if (!"PENDING".equals(invite.getInviteStatus()) || invite.getHackathonId() == null
-                || !invite.getHackathonId().equals(hackathonId)) {
-            return basePath + "?error=inviteInvalid";
-        }
+HackathonTeamInviteEntity invite = opInvite.get();
+if (!"PENDING".equals(invite.getInviteStatus()) || !invite.getHackathonId().equals(hackathonId)) {
+return basePath + "?error=inviteInvalid";
+}
 
-        // For external invites, link user if needed
-        if (invite.getInvitedUserId() == null && invite.getInvitedEmail() != null
-                && invite.getInvitedEmail().equalsIgnoreCase(user.getEmail())) {
-            invite.setInvitedUserId(user.getUserId());
-            hackathonTeamInviteRepository.save(invite);
-        }
+// Link external invite to user
+if (invite.getInvitedUserId() == null && invite.getInvitedEmail() != null
+&& invite.getInvitedEmail().equalsIgnoreCase(user.getEmail())) {
+invite.setInvitedUserId(user.getUserId());
+hackathonTeamInviteRepository.save(invite);
+}
 
-        // Ensure invite belongs to this user
-        if (invite.getInvitedUserId() != null && !invite.getInvitedUserId().equals(user.getUserId())) {
-            return basePath + "?error=inviteInvalid";
-        }
+if (invite.getInvitedUserId() != null && !invite.getInvitedUserId().equals(user.getUserId())) {
+return basePath + "?error=inviteInvalid";
+}
 
-        if (!accept) {
-            invite.setInviteStatus("REJECTED");
-            hackathonTeamInviteRepository.save(invite);
-            return basePath + "?success=inviteRejected";
-        }
+if (!accept) {
+invite.setInviteStatus("REJECTED");
+hackathonTeamInviteRepository.save(invite);
+return basePath + "?success=inviteRejected";
+}
 
-        // Already in a team?
-        if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, user.getUserId())) {
-            invite.setInviteStatus("REJECTED");
-            hackathonTeamInviteRepository.save(invite);
-            return basePath + "?error=alreadyInHackathon";
-        }
+// ========== PAYMENT CHECK FOR PAID HACKATHONS ==========
+Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
+if (opHackathon.isEmpty()) return "redirect:/participant/home";
+HackathonEntity hackathon = opHackathon.get();
 
-        Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
-        if (opHackathon.isEmpty()) return "redirect:/participant/home";
-        ensureParticipantRegistration(hackathonId, user.getUserId());
+if ("PAID".equalsIgnoreCase(hackathon.getPayment())) {
+boolean hasPaid = paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(
+hackathonId, user.getUserId(), "SUCCESS").isPresent();
+if (!hasPaid) {
+// Redirect to payment page with inviteId
+return "redirect:/participant/hackathon/" + hackathonId + "/pay?inviteId=" + inviteId;
+}
+}
 
-        long teamSize = hackathonTeamMemberRepository.countByTeamId(invite.getTeamId());
-        Integer maxSize = opHackathon.get().getMaxTeamSize();
-        if (maxSize != null && teamSize >= maxSize) {
-            return basePath + "?error=teamFull";
-        }
+// Already in a team?
+if (hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, user.getUserId())) {
+invite.setInviteStatus("REJECTED");
+hackathonTeamInviteRepository.save(invite);
+return basePath + "?error=alreadyInHackathon";
+}
 
-        // Add to team
-        HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
-        member.setTeamId(invite.getTeamId());
-        member.setHackathonId(hackathonId);
-        member.setMemberId(user.getUserId());
-        member.setRoleTitle(StringUtils.hasText(invite.getRoleTitle()) ? invite.getRoleTitle() : "MEMBER");
-        hackathonTeamMemberRepository.save(member);
+ensureParticipantRegistration(hackathonId, user.getUserId());
 
-        invite.setInviteStatus("ACCEPTED");
-        hackathonTeamInviteRepository.save(invite);
-        return basePath + "?success=inviteAccepted";
-    }
+long teamSize = hackathonTeamMemberRepository.countByTeamId(invite.getTeamId());
+Integer maxSize = hackathon.getMaxTeamSize();
+if (maxSize != null && teamSize >= maxSize) {
+return basePath + "?error=teamFull";
+}
 
+// Add to team
+HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
+member.setTeamId(invite.getTeamId());
+member.setHackathonId(hackathonId);
+member.setMemberId(user.getUserId());
+member.setRoleTitle(StringUtils.hasText(invite.getRoleTitle()) ? invite.getRoleTitle() : "MEMBER");
+hackathonTeamMemberRepository.save(member);
+
+invite.setInviteStatus("ACCEPTED");
+hackathonTeamInviteRepository.save(invite);
+return basePath + "?success=inviteAccepted";
+}
     // ==================== SUBMISSION ====================
 
     @GetMapping("participant/hackathon/{hackathonId}/submission")
@@ -1112,8 +1181,27 @@ public class ParticipantController {
         return "redirect:/participant/hackathon/" + hackathonId + "/submission?success=saved";
     }
     
+	/*
+	 * @GetMapping("participant/hackathon/{hackathonId}/pay") public String
+	 * showPaymentForm(@PathVariable Integer hackathonId, Model model, HttpSession
+	 * session) { UserEntity user = (UserEntity) session.getAttribute("user"); if
+	 * (user == null) return "redirect:/login";
+	 * 
+	 * Optional<HackathonEntity> opHackathon =
+	 * hackathonRepository.findById(hackathonId); if (opHackathon.isEmpty()) return
+	 * "redirect:/participant/home";
+	 * 
+	 * HackathonEntity hackathon = opHackathon.get(); // Check if already paid if
+	 * (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId,
+	 * user.getUserId(), "SUCCESS").isPresent()) { return
+	 * "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid"; }
+	 * model.addAttribute("hackathon", hackathon); return
+	 * "participant/ParticipantPayment"; }
+	 */
     @GetMapping("participant/hackathon/{hackathonId}/pay")
-    public String showPaymentForm(@PathVariable Integer hackathonId, Model model, HttpSession session) {
+    public String showPaymentForm(@PathVariable Integer hackathonId,
+                                  @RequestParam(required = false) Integer inviteId,
+                                  Model model, HttpSession session) {
         UserEntity user = (UserEntity) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
@@ -1121,14 +1209,83 @@ public class ParticipantController {
         if (opHackathon.isEmpty()) return "redirect:/participant/home";
 
         HackathonEntity hackathon = opHackathon.get();
-        // Check if already paid
         if (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId, user.getUserId(), "SUCCESS").isPresent()) {
             return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid";
         }
         model.addAttribute("hackathon", hackathon);
+        model.addAttribute("inviteId", inviteId);  // pass to JSP
         return "participant/ParticipantPayment";
     }
 
+	/*
+	 * @PostMapping("participant/hackathon/{hackathonId}/pay/process")
+	 * 
+	 * @Transactional public String processPayment(@PathVariable Integer
+	 * hackathonId,
+	 * 
+	 * @RequestParam String cardNumber,
+	 * 
+	 * @RequestParam String expMonth,
+	 * 
+	 * @RequestParam String expYear,
+	 * 
+	 * @RequestParam String cvv, HttpSession session) { UserEntity user =
+	 * (UserEntity) session.getAttribute("user"); if (user == null) return
+	 * "redirect:/login";
+	 * 
+	 * Optional<HackathonEntity> opHackathon =
+	 * hackathonRepository.findById(hackathonId); if (opHackathon.isEmpty()) return
+	 * "redirect:/participant/home";
+	 * 
+	 * HackathonEntity hackathon = opHackathon.get();
+	 * 
+	 * // Check registration period LocalDate today = LocalDate.now(); if
+	 * (hackathon.getRegistrationStartDate() != null &&
+	 * hackathon.getRegistrationEndDate() != null &&
+	 * (today.isBefore(hackathon.getRegistrationStartDate()) ||
+	 * today.isAfter(hackathon.getRegistrationEndDate()))) { return
+	 * "redirect:/participant/hackathon/" + hackathonId +
+	 * "?error=registrationClosed"; }
+	 * 
+	 * // Check if already paid or registered if
+	 * (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId,
+	 * user.getUserId(), "SUCCESS").isPresent()) { return
+	 * "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid"; } if
+	 * (hackathonParticipantRepository.existsByHackathonIdAndParticipantId(
+	 * hackathonId, user.getUserId())) { return "redirect:/participant/hackathon/" +
+	 * hackathonId + "?error=alreadyRegistered"; }
+	 * 
+	 * // Process payment String expiredDate = expMonth + expYear; // Ensure format
+	 * is MMYY (Authorize.net expects 2-digit year) // Convert year to last two
+	 * digits if needed if (expYear.length() > 2) { expiredDate = expMonth +
+	 * expYear.substring(expYear.length() - 2); } Double amount =
+	 * hackathon.getRegistrationFee(); ANetApiResponse response =
+	 * paymentService.chargeCreditCard(user.getEmail(), cardNumber, expiredDate,
+	 * amount);
+	 * 
+	 * // Check response if (response != null &&
+	 * response.getMessages().getResultCode() == MessageTypeEnum.OK) {
+	 * CreateTransactionResponse trResponse = (CreateTransactionResponse) response;
+	 * TransactionResponse result = trResponse.getTransactionResponse(); if (result
+	 * != null && result.getMessages() != null) { // Save payment record
+	 * PaymentEntity payment = new PaymentEntity();
+	 * payment.setHackathonId(hackathonId); payment.setUserId(user.getUserId());
+	 * payment.setAmount(amount); payment.setGateway("AUTHORIZE.NET");
+	 * payment.setPaymentDate(LocalDate.now());
+	 * payment.setPaymentGatewayAuthCode(result.getAuthCode());
+	 * payment.setPaymentGatewayTransactionId(result.getTransId());
+	 * payment.setPaymentMode("CARD"); payment.setPaymentStatus("SUCCESS");
+	 * paymentRepository.save(payment);
+	 * 
+	 * // Register user for hackathon ensureParticipantRegistration(hackathonId,
+	 * user.getUserId());
+	 * 
+	 * return "redirect:/participant/hackathon/" + hackathonId +
+	 * "?success=paymentSuccess"; } } // Payment failed return
+	 * "redirect:/participant/hackathon/" + hackathonId +
+	 * "/pay?error=paymentFailed"; }
+	 */
+    
     @PostMapping("participant/hackathon/{hackathonId}/pay/process")
     @Transactional
     public String processPayment(@PathVariable Integer hackathonId,
@@ -1136,40 +1293,32 @@ public class ParticipantController {
                                  @RequestParam String expMonth,
                                  @RequestParam String expYear,
                                  @RequestParam String cvv,
+                                 @RequestParam(required = false) Integer inviteId,
                                  HttpSession session) {
         UserEntity user = (UserEntity) session.getAttribute("user");
         if (user == null) return "redirect:/login";
 
         Optional<HackathonEntity> opHackathon = hackathonRepository.findById(hackathonId);
         if (opHackathon.isEmpty()) return "redirect:/participant/home";
-
         HackathonEntity hackathon = opHackathon.get();
 
-        // Check registration period
+        // Registration period check
         LocalDate today = LocalDate.now();
         if (hackathon.getRegistrationStartDate() != null && hackathon.getRegistrationEndDate() != null &&
             (today.isBefore(hackathon.getRegistrationStartDate()) || today.isAfter(hackathon.getRegistrationEndDate()))) {
             return "redirect:/participant/hackathon/" + hackathonId + "?error=registrationClosed";
         }
 
-        // Check if already paid or registered
+        // Already paid?
         if (paymentRepository.findByHackathonIdAndUserIdAndPaymentStatus(hackathonId, user.getUserId(), "SUCCESS").isPresent()) {
             return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyPaid";
         }
-        if (hackathonParticipantRepository.existsByHackathonIdAndParticipantId(hackathonId, user.getUserId())) {
-            return "redirect:/participant/hackathon/" + hackathonId + "?error=alreadyRegistered";
-        }
 
         // Process payment
-        String expiredDate = expMonth + expYear; // Ensure format is MMYY (Authorize.net expects 2-digit year)
-        // Convert year to last two digits if needed
-        if (expYear.length() > 2) {
-            expiredDate = expMonth + expYear.substring(expYear.length() - 2);
-        }
+        String expiredDate = expMonth + (expYear.length() > 2 ? expYear.substring(expYear.length() - 2) : expYear);
         Double amount = hackathon.getRegistrationFee();
         ANetApiResponse response = paymentService.chargeCreditCard(user.getEmail(), cardNumber, expiredDate, amount);
 
-        // Check response
         if (response != null && response.getMessages().getResultCode() == MessageTypeEnum.OK) {
             CreateTransactionResponse trResponse = (CreateTransactionResponse) response;
             TransactionResponse result = trResponse.getTransactionResponse();
@@ -1187,16 +1336,44 @@ public class ParticipantController {
                 payment.setPaymentStatus("SUCCESS");
                 paymentRepository.save(payment);
 
-                // Register user for hackathon
+                // Register user for hackathon (if not already)
                 ensureParticipantRegistration(hackathonId, user.getUserId());
 
+                // If this payment is for accepting an invitation, auto‑accept the invite
+                if (inviteId != null) {
+                    Optional<HackathonTeamInviteEntity> opInvite = hackathonTeamInviteRepository.findById(inviteId);
+                    if (opInvite.isPresent()) {
+                        HackathonTeamInviteEntity invite = opInvite.get();
+                        if ("PENDING".equals(invite.getInviteStatus()) &&
+                            (invite.getInvitedUserId() != null && invite.getInvitedUserId().equals(user.getUserId()))) {
+                            // Add to team
+                            if (!hackathonTeamMemberRepository.existsByHackathonIdAndMemberId(hackathonId, user.getUserId())) {
+                                long teamSize = hackathonTeamMemberRepository.countByTeamId(invite.getTeamId());
+                                Integer maxSize = hackathon.getMaxTeamSize();
+                                if (maxSize == null || teamSize < maxSize) {
+                                    HackathonTeamMembersEntity member = new HackathonTeamMembersEntity();
+                                    member.setTeamId(invite.getTeamId());
+                                    member.setHackathonId(hackathonId);
+                                    member.setMemberId(user.getUserId());
+                                    member.setRoleTitle(invite.getRoleTitle() != null ? invite.getRoleTitle() : "MEMBER");
+                                    hackathonTeamMemberRepository.save(member);
+                                    invite.setInviteStatus("ACCEPTED");
+                                    hackathonTeamInviteRepository.save(invite);
+                                }
+                            }
+                            // After accepting, redirect to Manage Team
+                            return "redirect:/participant/hackathon/" + hackathonId + "/team?success=inviteAccepted";
+                        }
+                    }
+                }
+
+                // No inviteId → normal registration
                 return "redirect:/participant/hackathon/" + hackathonId + "?success=paymentSuccess";
             }
         }
         // Payment failed
         return "redirect:/participant/hackathon/" + hackathonId + "/pay?error=paymentFailed";
     }
-
     // ==================== UTILITIES ====================
 
     private void ensureParticipantRegistration(Integer hackathonId, Integer userId) {

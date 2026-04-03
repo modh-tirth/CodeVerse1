@@ -21,6 +21,13 @@
             <p>Amount: <strong>₹ ${hackathon.registrationFee}</strong></p>
             <form action="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/pay/process" method="post">
                 <input type="hidden" name="amount" value="${hackathon.registrationFee}">
+                <input type="hidden" name="inviteId" value="${inviteId}">
+
+				<c:if test="${not empty inviteId}">
+				    <div class="alert alert-info mt-3">
+				        <i class="fas fa-info-circle"></i> Payment is required to accept your team invitation. After successful payment, you will be added to the team automatically.
+				    </div>
+				</c:if>
                 <div class="mb-3">
                     <label>Card Number</label>
                     <input type="text" name="cardNumber" class="form-control" required>
