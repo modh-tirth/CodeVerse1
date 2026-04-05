@@ -9,97 +9,90 @@
    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
-        /* ========== DASHBOARD LAYOUT STYLES (fixed header & sidebar) ========== */
+        /* ========== RESET & GLOBAL ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #f5f7fb;
             color: #1e293b;
-            overflow-x: hidden;
         }
+
+        /* ========== APP WRAPPER ========== */
         .app-wrapper {
             display: flex;
-            min-height: 100vh;
             height: 100vh;
+            width: 100%;
             overflow: hidden;
         }
-        /* Sidebar */
+
+        /* ========== SIDEBAR (matches AdminSidebar) ========== */
         .sidebar {
             width: 260px;
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
             color: #e2e8f0;
-            transition: width 0.3s ease;
+            transition: width 0.3s ease, left 0.3s ease;
             display: flex;
             flex-direction: column;
             box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+            flex-shrink: 0;
             height: 100vh;
+            overflow-y: auto;
         }
+
         .sidebar.collapsed {
             width: 80px;
         }
+
         .sidebar-header {
             padding: 24px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
+
         .logo-area {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        .logo-icon {
-            background: #3b82f6;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
+
+        .logo-icon-img {
+            height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
         }
+
         .logo-text {
             font-size: 1.25rem;
             font-weight: 600;
             color: white;
             white-space: nowrap;
         }
+
         .sidebar.collapsed .logo-text {
             display: none;
         }
-        .toggle-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #cbd5e1;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .toggle-btn:hover {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-        .sidebar.collapsed .toggle-btn i {
-            transform: rotate(180deg);
-        }
+
         .sidebar-menu {
             flex: 1;
             padding: 20px 0;
             overflow-y: auto;
         }
+
         .menu-item {
             display: flex;
             align-items: center;
@@ -109,37 +102,128 @@
             color: #cbd5e1;
             transition: 0.2s;
             white-space: nowrap;
+            cursor: pointer;
+            position: relative;
         }
-        .menu-item i {
+
+        .menu-item i:first-child {
             font-size: 1.25rem;
             min-width: 36px;
         }
+
         .menu-item span {
             margin-left: 8px;
             font-weight: 500;
+            flex: 1;
         }
-        .menu-item:hover, .menu-item.active {
+
+        .menu-item .arrow-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+
+        .menu-item.open .arrow-icon {
+            transform: rotate(-90deg);
+        }
+
+        .menu-item:hover {
             background: rgba(59, 130, 246, 0.2);
             color: white;
         }
-        .sidebar.collapsed .menu-item span {
+
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 56px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.open {
+            max-height: 200px;
+        }
+
+        .submenu-item {
+            padding: 10px 0 10px 12px;
+            margin: 2px 8px 2px 0;
+            border-radius: 10px;
+            color: #a0afc0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .submenu-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .submenu-item i {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            color: #a0afc0;
+        }
+
+        .submenu-item a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .menu-item .arrow-icon {
             display: none;
         }
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 12px 0;
+
+        .sidebar.collapsed .submenu {
+            display: none;
         }
-        /* Main content */
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                width: 280px;
+                z-index: 2000;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+                box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+            }
+            .main-content {
+                width: 100%;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* ========== MAIN CONTENT ========== */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: #f8fafc;
             height: 100vh;
             overflow: hidden;
+            background: #f8fafc;
         }
-        /* Header (fixed) */
+
+        /* ========== HEADER ========== */
         .top-header {
+            flex-shrink: 0;
             background: white;
             padding: 16px 30px;
             display: flex;
@@ -147,12 +231,15 @@
             justify-content: space-between;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             border-bottom: 1px solid #e9eef2;
+            z-index: 1000;
         }
+
         .header-left {
             display: flex;
             align-items: center;
             gap: 20px;
         }
+
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -161,38 +248,24 @@
             color: #475569;
             cursor: pointer;
         }
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #0f172a;
-        }
+
         .header-right {
             display: flex;
             align-items: center;
             gap: 25px;
         }
-        .notification-icon {
+
+        .user-dropdown {
             position: relative;
-            font-size: 1.25rem;
-            color: #475569;
             cursor: pointer;
         }
-        .notification-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 20px;
-        }
+
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
         }
+
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -204,9 +277,11 @@
             color: white;
             font-weight: 600;
         }
+
         .user-info {
             display: none;
         }
+
         @media (min-width: 768px) {
             .user-info {
                 display: block;
@@ -221,12 +296,284 @@
                 color: #64748b;
             }
         }
-        /* Scrollable content area */
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            z-index: 1001;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
+
+        /* ========== CONTENT AREA (SCROLLABLE) ========== */
         .content-area {
             flex: 1;
             overflow-y: auto;
             padding: 30px;
         }
+
+        /* ========== CARD & FORM STYLES ========== */
+        .form-card, .table-card {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.04);
+            border: 1px solid #eef2f6;
+        }
+
+        .card-header-custom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .card-header-custom h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header-custom i {
+            color: #3b82f6;
+            font-size: 1.3rem;
+        }
+
+        .badge-count {
+            background: #e2e8f0;
+            color: #1e293b;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Form layout */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .form-group-flex {
+            flex: 2;
+            min-width: 200px;
+        }
+
+        .form-group-flex label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-group-icon {
+            padding: 0 16px;
+            color: #3b82f6;
+            font-size: 1rem;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 14px 16px 14px 0;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            color: #1e293b;
+            background: transparent;
+            font-family: inherit;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 20px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background: #fef9c3;
+            border-left: 4px solid #fbbf24;
+            color: #854d0e;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        /* Table styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .judge-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .judge-table th {
+            text-align: left;
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .judge-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #edf2f7;
+            color: #1e293b;
+            vertical-align: middle;
+        }
+
+        .judge-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .text-muted {
+            color: #94a3b8;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .py-4 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
         /* Footer */
         .footer {
             background: white;
@@ -235,152 +582,25 @@
             text-align: center;
             color: #64748b;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
-            }
-            .sidebar.mobile-open {
-                left: 0;
-            }
-            .main-content {
-                width: 100%;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .top-header {
-                padding: 16px 20px;
-            }
             .content-area {
                 padding: 20px;
             }
-        }
-
-        /* ========== CUSTOM FORM STYLES ========== */
-        .form-card {
-            background: white;
-            border-radius: 24px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
-        }
-        .table-card {
-            background: white;
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
-        }
-        .card-header-custom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .card-header-custom h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #0f172a;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card-header-custom i { color: #3b82f6; }
-        .input-group {
-            display: flex;
-            align-items: center;
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        .input-group:focus-within {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-        .input-group-icon {
-            padding: 0 15px;
-            color: #3b82f6;
-            font-size: 1rem;
-        }
-        .input-group select {
-            width: 100%;
-            padding: 12px 15px 12px 0;
-            border: none;
-            outline: none;
-            font-size: 0.95rem;
-            color: #1e293b;
-            background: transparent;
-            font-family: inherit;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px;
-        }
-        .btn {
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            border: none;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-        }
-        .btn-danger {
-            background: #ef4444;
-            color: white;
-        }
-        .btn-danger:hover {
-            background: #dc2626;
-        }
-        .table {
-            margin-top: 20px;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        .table thead th {
-            background: #f8fafc;
-            border-bottom: 2px solid #e2e8f0;
-            color: #475569;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            padding: 15px;
-        }
-        .table tbody td {
-            padding: 12px 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #edf2f7;
-        }
-        .alert-custom {
-            border-radius: 16px;
-            border: none;
-            margin-bottom: 20px;
+            .form-card, .table-card {
+                padding: 20px;
+            }
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -390,35 +610,35 @@
     <div class="main-content">
         <jsp:include page="AdminHeader.jsp" />
         <div class="content-area">
-            <!-- Breadcrumb -->
-            <div class="page-header-section" style="margin-bottom: 24px;">
-                <h1 class="page-title" style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Manage Judges</h1>
-               
+            <!-- Page Header -->
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Manage Judges</h1>
+                <p style="color: #64748b; margin-top: 4px;">Assign or remove judges for this hackathon</p>
             </div>
 
-            <!-- Messages -->
+            <!-- Alert Messages -->
             <c:if test="${success == 'added'}">
-                <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> Judge assigned successfully.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-success">
+                    <span><i class="fas fa-check-circle"></i> Judge assigned successfully.</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             </c:if>
             <c:if test="${success == 'removed'}">
-                <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> Judge removed from hackathon.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-success">
+                    <span><i class="fas fa-check-circle"></i> Judge removed from hackathon.</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             </c:if>
             <c:if test="${error == 'alreadyAssigned'}">
-                <div class="alert alert-warning alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> Judge already assigned.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-warning">
+                    <span><i class="fas fa-exclamation-triangle"></i> Judge already assigned.</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             </c:if>
             <c:if test="${error == 'invalidJudge'}">
-                <div class="alert alert-danger alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> Invalid judge selection.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert alert-danger">
+                    <span><i class="fas fa-exclamation-triangle"></i> Invalid judge selection.</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             </c:if>
 
@@ -426,26 +646,27 @@
             <div class="form-card">
                 <div class="card-header-custom">
                     <h3><i class="fas fa-user-plus"></i> Assign New Judge</h3>
-                    <a href="listHackathon" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.8rem;">
+                    <a href="listHackathon" class="btn btn-secondary" style="padding: 8px 18px; font-size: 0.85rem;">
                         <i class="fas fa-arrow-left"></i> Back to Hackathons
                     </a>
                 </div>
                 <form action="saveHackathonJudge" method="post">
                     <input type="hidden" name="hackathonId" value="${hackathon.hackathonId}">
-                    <div class="row g-3">
-                        <div class="col-md-9">
+                    <div class="form-row">
+                        <div class="form-group-flex">
+                            <label>Select Judge</label>
                             <div class="input-group">
                                 <span class="input-group-icon"><i class="fas fa-gavel"></i></span>
                                 <select name="userId" required>
-                                    <option value="">-- Select judge to assign --</option>
+                                    <option value="">-- Choose a judge --</option>
                                     <c:forEach items="${availableJudges}" var="j">
                                         <option value="${j.userId}">${j.firstName} ${j.lastName} - ${j.email}</option>
                                     </c:forEach>
                                 </select>
                             </div>
-                        </div><br>
-                        <div class="col-md-3">
-                            <button type="submit" class="btn btn-primary w-100">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-plus-circle"></i> Assign Judge
                             </button>
                         </div>
@@ -457,10 +678,10 @@
             <div class="table-card">
                 <div class="card-header-custom">
                     <h3><i class="fas fa-users"></i> Assigned Judges</h3>
-                    <span class="badge bg-primary">${assignedJudges.size()} Judges</span>
+                    <span class="badge-count">${assignedJudges.size()} Judges</span>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="judge-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -474,7 +695,7 @@
                             <c:if test="${empty assignedJudges}">
                                 <tr>
                                     <td colspan="5" class="text-center text-muted py-4">
-                                        <i class="fas fa-user-slash me-2"></i> No judges assigned for this hackathon.
+                                        <i class="fas fa-user-slash"></i> No judges assigned for this hackathon.
                                     </td>
                                 </tr>
                             </c:if>
@@ -485,7 +706,7 @@
                                     <td>${judgeMap[a.userId].email}</td>
                                     <td>${judgeMap[a.userId].contactNum}</td>
                                     <td>
-                                        <a class="btn btn-danger btn-sm"
+                                        <a class="btn btn-danger" style="padding: 8px 16px; font-size: 0.8rem;"
                                            href="deleteHackathonJudge?hackathonJudgeId=${a.hackathonJudgeId}&hackathonId=${hackathon.hackathonId}"
                                            onclick="return confirm('Remove this judge from hackathon?')">
                                             <i class="fas fa-trash-alt"></i> Remove
@@ -498,11 +719,12 @@
                 </div>
             </div>
         </div>
-        
+        <footer class="footer">
+            &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
+        </footer>
     </div>
 </div>
 
-<!-- Sidebar toggle script -->
 <script>
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
@@ -541,7 +763,19 @@
             sidebar.classList.remove('mobile-open');
         }
     });
+
+    // User dropdown toggle
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+    }
+    document.addEventListener('click', () => {
+        if (dropdownMenu) dropdownMenu.classList.remove('show');
+    });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

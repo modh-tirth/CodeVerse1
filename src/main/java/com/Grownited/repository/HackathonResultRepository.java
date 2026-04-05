@@ -14,4 +14,6 @@ public interface HackathonResultRepository extends JpaRepository<HackathonResult
 	Optional<HackathonResultEntity> findByHackathonIdAndJudgeIdAndTeamId(Integer hackathonId, Integer judgeId, Integer teamId);
 
 	List<HackathonResultEntity> findByHackathonId(Integer hackathonId);
+
+	
 }

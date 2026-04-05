@@ -1,7 +1,7 @@
 package com.Grownited.controller;
 
 import java.io.IOException;
-
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,8 +30,10 @@ import com.Grownited.repository.HackathonPrizeRepository;
 import com.Grownited.repository.HackathonRepository;
 import com.Grownited.repository.UserRepository;
 import com.Grownited.repository.UserTypeRepository;
+import com.Grownited.service.HackathonService;
 import com.cloudinary.Cloudinary;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -58,6 +60,9 @@ public class HackathonController {
 
 		@Autowired
 		UserRepository userRepository;
+		
+		@Autowired
+		HackathonService hackathonService;
 	
 	@GetMapping("/create-hackathon")
 	    public String createHackathon(Model model) {
@@ -348,5 +353,37 @@ public class HackathonController {
 			hackathonPrizeRepository.save(prize);
 		}
 
+		@GetMapping("/exportHackathons")
+		public void exportHackathons(HttpServletResponse response) throws IOException {
 
+		    response.setContentType("text/csv");
+		    response.setHeader("Content-Disposition", "attachment; filename=hackathons.csv");
+
+		    List<HackathonEntity> list = hackathonService.getAllHackathons();
+
+		    PrintWriter writer = response.getWriter();
+
+		    // Header
+		    writer.println("ID,Title,Type,Payment,User Type,Team Size,Start Date,End Date,Location,Status");
+
+		    // Data
+		    for (HackathonEntity h : list) {
+		        writer.println(
+		            h.getHackathonId() + "," +
+		            h.getTitle() + "," +
+		            h.getEventType() + "," +
+		            h.getPayment() + "," +
+		            h.getUserType() + "," +
+		            h.getMinTeamSize() + "-" + h.getMaxTeamSize() + "," +
+		            h.getRegistrationStartDate() + "," +
+		            h.getRegistrationEndDate() + "," +
+		            h.getLocation() + "," +
+		            h.getStatus()
+		        );
+		    }
+
+		    writer.flush();
+		    writer.close();
+		}
+		
 }

@@ -314,7 +314,7 @@
             <!-- Header & Back -->
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
                 <div>
-                    <a href="${pageContext.request.contextPath}/judge/dashboard" class="back-link-modern mb-2 d-inline-block">
+                    <a href="${pageContext.request.contextPath}/judge/judge-dashboard" class="back-link-modern mb-2 d-inline-block">
                         <i class="fas fa-arrow-left"></i> Back to Dashboard
                     </a>
                     <h1 class="page-title mt-2">Submissions Review</h1>

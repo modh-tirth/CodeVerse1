@@ -18,6 +18,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 	List<UserEntity> findByRole(String role);
 	
 	long countByRole(String role);
-	
+
+	/*
+	 * @Query("SELECT CONCAT(u.firstName, ' ', u.lastName) AS name, COUNT(hj.hackathonId) AS count "
+	 * + "FROM UserEntity u JOIN HackathonJudgeEntity hj ON u.userId = hj.userId " +
+	 * "GROUP BY u.userId ORDER BY count DESC") List<Object[]> getJudgeWorkload();
+	 */
 
 }

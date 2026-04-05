@@ -15,5 +15,18 @@ public interface HackathonSubmissionRepository extends JpaRepository<HackathonSu
 	Optional<HackathonSubmissionEntity> findByHackathonIdAndTeamId(Integer hackathonId, Integer teamId);
 
 	List<HackathonSubmissionEntity> findByHackathonIdIn(List<Integer> hackathonIds);
+
+	@Query("SELECT COUNT(DISTINCT s.hackathonSubmissionId) FROM HackathonSubmissionEntity s")
+	long countDistinctSubmission();
+	/*
+	 * @Query("SELECT COUNT(DISTINCT s.submissionId) FROM HackathonSubmissionEntity s"
+	 * ) long countDistinctSubmission();
+	 */
+	@Query("SELECT COUNT(s) FROM HackathonSubmissionEntity s")
+	long getTotalSubmissions();
+
+	@Query("SELECT COUNT(DISTINCT s.hackathonSubmissionId) FROM HackathonSubmissionEntity s " +
+	       "WHERE EXISTS (SELECT 1 FROM HackathonResultEntity r WHERE r.hackathonId = s.hackathonId AND r.teamId = s.teamId)")
+	long getEvaluatedSubmissions();
 	
 }

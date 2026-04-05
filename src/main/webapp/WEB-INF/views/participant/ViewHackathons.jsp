@@ -477,7 +477,7 @@
 </c:choose>             <!-- Leaderboard link (if available) -->
                 <c:if test="${leaderboardAvailable}">
                     <hr class="my-4">
-                    <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathon_id}/leaderboard" 
+                    <a href="${pageContext.request.contextPath}/participant/hackathon/${hackathon.hackathonId}/leaderboard" 
                        class="btn btn-outline-secondary w-100 py-2 fw-bold">
                         <i class="fas fa-chart-simple me-2"></i> View Leaderboard
                     </a>

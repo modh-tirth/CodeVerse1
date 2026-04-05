@@ -52,17 +52,12 @@
             align-items: center;
             gap: 12px;
         }
-        .logo-icon {
-            background: #3b82f6;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
+        .logo-icon-img {
+            height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
         }
         .logo-text {
             font-size: 1.25rem;
@@ -107,26 +102,101 @@
             color: #cbd5e1;
             transition: 0.2s;
             white-space: nowrap;
+            cursor: pointer;
+            position: relative;
         }
-        .menu-item i {
+        .menu-item i:first-child {
             font-size: 1.25rem;
             min-width: 36px;
         }
         .menu-item span {
             margin-left: 8px;
             font-weight: 500;
+            flex: 1;
         }
-        .menu-item:hover, .menu-item.active {
+        .menu-item .arrow-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+        .menu-item.open .arrow-icon {
+            transform: rotate(-90deg);
+        }
+        .menu-item:hover {
             background: rgba(59, 130, 246, 0.2);
             color: white;
         }
-        .sidebar.collapsed .menu-item span {
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+        .submenu {
+            list-style: none;
+            padding-left: 56px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .submenu.open {
+            max-height: 200px;
+        }
+        .submenu-item {
+            padding: 10px 0 10px 12px;
+            margin: 2px 8px 2px 0;
+            border-radius: 10px;
+            color: #a0afc0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        .submenu-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .submenu-item i {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            color: #a0afc0;
+        }
+        .submenu-item a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .menu-item .arrow-icon {
             display: none;
         }
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 12px 0;
+        .sidebar.collapsed .submenu {
+            display: none;
         }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                width: 280px;
+                z-index: 2000;
+                transition: left 0.3s ease-in-out;
+            }
+            .sidebar.mobile-open {
+                left: 0;
+                box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+            }
+            .main-content {
+                width: 100%;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Main content area */
         .main-content {
             flex: 1;
             display: flex;
@@ -167,27 +237,14 @@
             align-items: center;
             gap: 25px;
         }
-        .notification-icon {
+        .user-dropdown {
             position: relative;
-            font-size: 1.25rem;
-            color: #475569;
             cursor: pointer;
-        }
-        .notification-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 20px;
         }
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
         }
         .user-avatar {
             width: 40px;
@@ -217,6 +274,41 @@
                 color: #64748b;
             }
         }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            z-index: 1001;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
         .content-area {
             flex: 1;
             overflow-y: auto;
@@ -229,89 +321,95 @@
             text-align: center;
             color: #64748b;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
-            }
-            .sidebar.mobile-open {
-                left: 0;
-            }
-            .main-content {
-                width: 100%;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .top-header {
-                padding: 16px 20px;
-            }
             .content-area {
                 padding: 20px;
             }
         }
 
-        /* ========== FORM SPECIFIC STYLES ========== */
+        /* ========== ENHANCED FORM STYLES ========== */
         .form-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 35px;
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.04);
+            border: 1px solid #eef2f6;
+            transition: all 0.3s ease;
         }
         .card-header-custom {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #f1f5f9;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .card-header-custom h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.35rem;
+            font-weight: 700;
             color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
-        .card-header-custom i { color: #3b82f6; }
-        .form-group { margin-bottom: 20px; }
+        .card-header-custom i {
+            color: #3b82f6;
+            font-size: 1.5rem;
+        }
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 40px;
+            padding: 8px 18px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
         .form-group label {
             display: block;
             font-size: 0.85rem;
             font-weight: 600;
-            color: #64748b;
+            color: #475569;
             margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         .input-group {
             display: flex;
             align-items: center;
             background: #fff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            transition: all 0.2s ease;
         }
         .input-group:focus-within {
             border-color: #3b82f6;
             box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
         .input-group-icon {
-            padding: 0 15px;
+            padding: 0 16px;
             color: #3b82f6;
             font-size: 1rem;
         }
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
-            padding: 12px 15px 12px 0;
+            padding: 14px 16px 14px 0;
             border: none;
             outline: none;
             font-size: 0.95rem;
@@ -319,44 +417,83 @@
             background: transparent;
             font-family: inherit;
         }
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+        .input-group input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
         }
-        .btn {
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            border: none;
-            font-size: 0.95rem;
+        .radio-group {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            padding: 8px 0;
+            flex-wrap: wrap;
+        }
+        .radio-group label {
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-weight: 500;
+            text-transform: none;
+            font-size: 0.9rem;
+            color: #1e293b;
+            cursor: pointer;
+        }
+        .radio-group input[type="radio"] {
+            accent-color: #3b82f6;
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 36px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 30px;
+        }
+        .btn {
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
         }
         .btn-primary {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
         }
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
         }
-        .btn-secondary {
-            background: #f1f5f9;
-            color: #475569;
+        .alert {
+            margin-top: 20px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            background: #fee2e2;
+            color: #991b1b;
+            font-size: 0.9rem;
         }
         @media (max-width: 768px) {
+            .form-card {
+                padding: 24px;
+            }
             .action-buttons {
                 flex-direction: column;
             }
             .btn {
                 width: 100%;
                 justify-content: center;
+            }
+            .radio-group {
+                gap: 16px;
             }
         }
     </style>
@@ -367,15 +504,14 @@
     <div class="main-content">
         <jsp:include page="AdminHeader.jsp" />
         <div class="content-area">
-            <div class="page-header-section" style="margin-bottom: 24px;">
-                <h1 class="page-title" style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Invite Judge</h1>
-               
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Invite Judge</h1>
             </div>
 
             <div class="form-card">
                 <div class="card-header-custom">
                     <h3><i class="fas fa-user-plus"></i> Invite New Judge</h3>
-                    <a href="listJudge" class="btn btn-secondary" style="padding: 8px 15px; font-size: 0.8rem;">
+                    <a href="listJudge" class="btn-secondary">
                         <i class="fas fa-arrow-left"></i> Back to List
                     </a>
                 </div>
@@ -384,42 +520,59 @@
                         <label>First Name</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-user"></i></span>
-                            <input type="text" name="firstName" required />
+                            <input type="text" name="firstName" required placeholder="Enter first name" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-user"></i></span>
-                            <input type="text" name="lastName" required />
+                            <input type="text" name="lastName" required placeholder="Enter last name" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-envelope"></i></span>
-                            <input type="email" name="email" required />
+                            <input type="email" name="email" required placeholder="judge@example.com" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Contact Number</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-phone"></i></span>
-                            <input type="text" name="contactNum" />
+                            <input type="text" name="contactNum" placeholder="+91 9876543210" />
+                        </div>
+                    </div>
+                    <!-- Gender Field -->
+                    <div class="form-group">
+                        <label>Gender</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="gender" value="Male" required> Male</label>
+                            <label><input type="radio" name="gender" value="Female"> Female</label>
+                            <label><input type="radio" name="gender" value="Other"> Other</label>
+                        </div>
+                    </div>
+                    <!-- Birth Year Field -->
+                    <div class="form-group">
+                        <label>Birth Year</label>
+                        <div class="input-group">
+                            <span class="input-group-icon"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="number" name="birthYear" placeholder="YYYY" min="1900" max="2026" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Qualification</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-graduation-cap"></i></span>
-                            <input type="text" name="qualification" placeholder="e.g. M.Tech, PhD" />
+                            <input type="text" name="qualification" placeholder="e.g., M.Tech, PhD" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Designation</label>
                         <div class="input-group">
                             <span class="input-group-icon"><i class="fas fa-briefcase"></i></span>
-                            <input type="text" name="designation" placeholder="e.g. Senior Engineer, Professor" />
+                            <input type="text" name="designation" placeholder="e.g., Senior Engineer, Professor" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -435,16 +588,18 @@
                         </button>
                     </div>
                     <c:if test="${not empty error}">
-                        <div class="alert alert-danger mt-3">${error}</div>
+                        <div class="alert">${error}</div>
                     </c:if>
                 </form>
             </div>
         </div>
-
+        <footer class="footer">
+            &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
+        </footer>
     </div>
 </div>
 
-<!-- Sidebar toggle script -->
+<!-- Sidebar and dropdown toggle script -->
 <script>
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
@@ -482,6 +637,19 @@
         if (window.innerWidth > 768) {
             sidebar.classList.remove('mobile-open');
         }
+    });
+
+    // User dropdown
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+    }
+    document.addEventListener('click', () => {
+        if (dropdownMenu) dropdownMenu.classList.remove('show');
     });
 </script>
 </body>

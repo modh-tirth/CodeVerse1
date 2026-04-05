@@ -8,15 +8,20 @@
     <title>Manage Hackathons | CodeVerse</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
+        /* ========== RESET & GLOBAL ========== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
@@ -25,19 +30,179 @@
             color: #1e293b;
         }
 
+        /* ========== APP WRAPPER ========== */
         .app-wrapper {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            width: 100%;
         }
 
+        /* ========== SIDEBAR (matches AdminSidebar) ========== */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            transition: width 0.3s ease, left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+            flex-shrink: 0;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon-img {
+            height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .logo-text {
+            display: none;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            margin: 4px 8px;
+            border-radius: 12px;
+            color: #cbd5e1;
+            transition: 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .menu-item i:first-child {
+            font-size: 1.25rem;
+            min-width: 36px;
+        }
+
+        .menu-item span {
+            margin-left: 8px;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .menu-item .arrow-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+
+        .menu-item.open .arrow-icon {
+            transform: rotate(-90deg);
+        }
+
+        .menu-item:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 56px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .submenu.open {
+            max-height: 200px;
+        }
+
+        .submenu-item {
+            padding: 10px 0 10px 12px;
+            margin: 2px 8px 2px 0;
+            border-radius: 10px;
+            color: #a0afc0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+
+        .submenu-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .submenu-item i {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            color: #a0afc0;
+        }
+
+        .submenu-item a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .menu-item .arrow-icon {
+            display: none;
+        }
+
+        .sidebar.collapsed .submenu {
+            display: none;
+        }
+
+        /* ========== MAIN CONTENT ========== */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
             background: #f8fafc;
         }
 
+        /* ========== HEADER ========== */
         .top-header {
+            flex-shrink: 0;
             background: white;
             padding: 16px 30px;
             display: flex;
@@ -45,6 +210,7 @@
             justify-content: space-between;
             box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             border-bottom: 1px solid #e9eef2;
+            z-index: 1000;
         }
 
         .header-left {
@@ -74,29 +240,15 @@
             gap: 25px;
         }
 
-        .notification-icon {
+        .user-dropdown {
             position: relative;
-            font-size: 1.25rem;
-            color: #475569;
             cursor: pointer;
-        }
-
-        .notification-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 20px;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
         }
 
         .user-avatar {
@@ -130,17 +282,60 @@
             }
         }
 
-        .content-area {
-            padding: 30px;
-            flex: 1;
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            z-index: 1001;
         }
 
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
+
+        /* ========== CONTENT AREA (SCROLLABLE) ========== */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        /* ========== TABLE CARD ========== */
         .table-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 24px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.02);
-            border: 1px solid #edf2f7;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.04);
+            border: 1px solid #eef2f6;
+            margin-bottom: 24px;
         }
 
         .card-header {
@@ -148,50 +343,55 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .card-header h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
+            font-size: 1.35rem;
+            font-weight: 700;
             color: #0f172a;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .card-header h3 i {
             color: #3b82f6;
+            font-size: 1.5rem;
         }
 
         .add-btn {
             background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 8px 20px;
-            font-weight: 500;
-            display: flex;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: 600;
+            display: inline-flex;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
             text-decoration: none;
+            transition: 0.2s;
+            font-size: 0.9rem;
         }
+
         .add-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59,130,246,0.3);
         }
 
+        /* ========== TABLE STYLES ========== */
         .responsive-table {
             overflow-x: auto;
         }
 
-        table {
+        .hackathon-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        th {
+        .hackathon-table th {
             text-align: left;
             padding: 16px 12px;
             font-weight: 600;
@@ -202,43 +402,59 @@
             border-bottom: 2px solid #e2e8f0;
         }
 
-        td {
+        .hackathon-table td {
             padding: 16px 12px;
             border-bottom: 1px solid #edf2f7;
             color: #1e293b;
-            font-weight: 500;
+            vertical-align: middle;
+        }
+
+        .hackathon-table tr:hover td {
+            background: #f8fafc;
         }
 
         .event-title {
-            font-weight: 600;
+            font-weight: 700;
             color: #0f172a;
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
+
         .type-badge {
             background: #f1f5f9;
             color: #475569;
-            padding: 2px 10px;
+            padding: 4px 12px;
             border-radius: 30px;
             font-size: 0.7rem;
-            font-weight: 500;
+            font-weight: 600;
             display: inline-block;
-            margin-right: 5px;
+            margin-right: 6px;
         }
+
         .date-start {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
         }
+
         .date-end {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #ef4444;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
+
         .team-size {
             font-size: 0.75rem;
             color: #64748b;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
+        /* Status badges */
         .status-badge {
             padding: 6px 14px;
             border-radius: 30px;
@@ -246,27 +462,32 @@
             font-weight: 600;
             display: inline-block;
         }
+
         .status-live {
             background: #d1fae5;
             color: #065f46;
         }
+
         .status-expired {
             background: #fee2e2;
             color: #991b1b;
         }
+
         .status-upcoming {
             background: #fef9c3;
             color: #854d0e;
         }
 
+        /* Action buttons */
         .action-btns {
             display: flex;
             gap: 8px;
         }
+
         .btn-icon {
             width: 36px;
             height: 36px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: none;
             display: inline-flex;
             align-items: center;
@@ -275,41 +496,77 @@
             transition: 0.2s;
             color: white;
         }
+
         .btn-edit {
             background: #3b82f6;
         }
+
         .btn-edit:hover {
             background: #2563eb;
         }
+
         .btn-delete {
             background: #ef4444;
         }
+
         .btn-delete:hover {
             background: #dc2626;
         }
 
+        .btn-judge {
+            background: #10b981;
+        }
+
+        .btn-judge:hover {
+            background: #059669;
+        }
+
+        /* ========== PAGINATION ========== */
         .pagination {
             display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-            gap: 5px;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
-        .page-item {
-            list-style: none;
-        }
+
         .page-link {
-            padding: 8px 14px;
-            border-radius: 30px;
+            padding: 8px 18px;
+            border-radius: 40px;
             background: white;
             border: 1px solid #e2e8f0;
             color: #1e293b;
             text-decoration: none;
             transition: 0.2s;
-        }
-        .page-link:hover {
-            background: #f1f5f9;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
+        .page-link:hover:not(.disabled) {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .current-page {
+            background: skyblue;
+            color: #1e293b;
+            font-weight: 700;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+        }
+
+        /* ========== FOOTER ========== */
         .footer {
             background: white;
             padding: 20px 30px;
@@ -317,179 +574,21 @@
             text-align: center;
             color: #64748b;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        @media (max-width: 768px) {
-            .mobile-menu-btn {
-                display: block;
-            }
-            .top-header {
-                padding: 16px 20px;
-            }
-            .content-area {
-                padding: 20px;
-            }
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-        }
-        /* Sidebar styles (kept as in original) */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-            color: #e2e8f0;
-            transition: width 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
-        }
-
-        .sidebar.collapsed {
-            width: 80px;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            background: #3b82f6;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-        }
-
-        .logo-text {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: white;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .sidebar.collapsed .logo-text {
-            display: none;
-        }
-
-        .toggle-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #cbd5e1;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .toggle-btn:hover {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        .sidebar.collapsed .toggle-btn i {
-            transform: rotate(180deg);
-        }
-
-        .sidebar-menu {
-            flex: 1;
-            padding: 20px 0;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 24px;
-            margin: 4px 8px;
-            border-radius: 12px;
-            color: #cbd5e1;
-            transition: 0.2s;
-            white-space: nowrap;
-        }
-
-        .menu-item i {
-            font-size: 1.25rem;
-            min-width: 36px;
-        }
-
-        .menu-item span {
-            margin-left: 8px;
-            font-weight: 500;
-        }
-
-        .menu-item:hover, .menu-item.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: white;
-        }
-
-        .sidebar.collapsed .menu-item span {
-            display: none;
-        }
-
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 12px 0;
-        }
-          /* Header (fixed) */
-        .top-header {
-            background: white;
-            padding: 16px 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            border-bottom: 1px solid #e9eef2;
-        }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: #475569;
-            cursor: pointer;
-        }
-        .page-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #0f172a;
-        }
-          /* Responsive */
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -260px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
+                left: -280px;
+                width: 280px;
+                z-index: 2000;
+                transition: left 0.3s ease-in-out;
             }
             .sidebar.mobile-open {
                 left: 0;
+                box-shadow: 10px 0 25px rgba(0,0,0,0.2);
             }
             .main-content {
                 width: 100%;
@@ -503,85 +602,37 @@
             .content-area {
                 padding: 20px;
             }
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .hackathon-table th, .hackathon-table td {
+                padding: 12px 8px;
+            }
         }
-        /* 1. Ensure the app-wrapper takes full height and prevents body scroll */
-html, body {
-    height: 100%;
-    overflow: hidden; /* Prevent double scrollbars */
-}
-
-.app-wrapper {
-    display: flex;
-    height: 100vh; /* Lock height to viewport */
-    width: 100vw;
-}
-
-/* 2. Make Sidebar height 100% and non-scrollable (unless menu is too long) */
-.sidebar {
-    width: 260px;
-    height: 100vh;
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    color: #e2e8f0;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0; /* Prevent sidebar from shrinking */
-    z-index: 1001;
-    overflow-y: auto; /* Scrollable menu if items exceed screen height */
-}
-
-/* 3. Main Content should be a flex column that handles its own scroll */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden; /* Header stays top, only content-area scrolls */
-}
-
-/* 4. Fix the Header to the top */
-.top-header {
-    flex-shrink: 0; /* Don't let header squish */
-    background: white;
-    padding: 16px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-    border-bottom: 1px solid #e9eef2;
-    z-index: 1000;
-}
-
-/* 5. This is the only part that should scroll */
-.content-area {
-    padding: 30px;
-    flex: 1;
-    overflow-y: auto; /* Enable scrolling for the table and content only */
-    background: #f8fafc;
-}
     </style>
 </head>
 <body>
 <div class="app-wrapper">
-    <!-- Sidebar (unchanged) -->
     <jsp:include page="AdminSidebar.jsp" />
-
-    <!-- Main Content -->
     <div class="main-content">
-        <!-- Shared Header -->
         <jsp:include page="AdminHeader.jsp" />
-
-        <!-- Content Area -->
         <div class="content-area">
-            <h1 class="page-title" style="margin-bottom: 24px;">Manage Hackathons</h1>
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">Manage Hackathons</h1>
+            </div>
 
             <div class="table-card">
                 <div class="card-header">
                     <h3><i class="fas fa-calendar-alt"></i> Hackathon Events List</h3>
-                    <!-- If you have a create button, uncomment and adjust -->
-                    <a href="create-hackathon" class="add-btn"><i class="fas fa-plus"></i> Launch New</a>
+                   <!--  <a href="create-hackathon" class="add-btn" style="margin-left:50rem"><i class="fas fa-plus"></i> Launch New</a>
+                     -->
+                     <a href="exportHackathons" class="add-btn" style="background: linear-gradient(135deg,#10b981,#059669);">
+            <i class="fas fa-download"></i> Export Report
+        </a>
                 </div>
                 <div class="responsive-table">
-                    <table>
+                    <table class="hackathon-table">
                         <thead>
                             <tr>
                                 <th>Sr.No</th>
@@ -590,121 +641,100 @@ html, body {
                                 <th>Registration Period</th>
                                 <th>Location</th>
                                 <th>Status</th>
-                                <th>Setting</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
-                      <tbody>
-    <c:forEach var="h" items="${allHackathons}" varStatus="s">
-        <tr>
-           <td>${(currentPage - 1) * 10 + s.count}</td>
-            <td>
-                <span class="event-title">${h.title}</span>
-                <div style="margin-top: 5px;">
-                    <span class="type-badge">${h.eventType}</span>
-                    <span class="type-badge">${h.payment}</span>
-                </div>
-            </td>
-		    <td>
-			    <div>${h.userType}</div>
-			    <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
-			</td>
-            <td>
-                <div class="date-start"><i class="fas fa-calendar-check"></i> Start: ${h.registrationStartDate}</div>
-                <div class="date-end"><i class="fas fa-calendar-times"></i> End: ${h.registrationEndDate}</div>
-            </td>
-            <td>${h.location}</td>
-            <td>
-                <c:choose>
-                    <c:when test="${h.status == 'LIVE'}">
-                        <span class="status-badge status-live">Live</span>
-                    </c:when>
-                    <c:when test="${h.status == 'EXPIRED'}">
-                        <span class="status-badge status-expired">Expired</span>
-                    </c:when>
-                    <c:otherwise>
-                        <span class="status-badge status-upcoming">${h.status}</span>
-                    </c:otherwise>
-                </c:choose>
-            </td>
-            <td>
-                <div class="action-btns">
-                    <button class="btn-icon btn-edit"
-                            onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'">
-                        <i class="fas fa-pencil-alt"></i>
-                    </button>
-                    <button class="btn-icon btn-delete"
-                            onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                      <button class="btn-icon" style="background: #10b981;"
-			                onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'"
-			                title="Manage Judges">
-			            <i class="fas fa-users"></i>
-			        </button>
-                </div>
-            </td>
-        </tr>
-    </c:forEach>
-
-    <c:if test="${empty allHackathons}">
-        <tr>
-            <td colspan="7" style="text-align:center;">No hackathons found</td>
-        </tr>
-    </c:if>
-</tbody>
+                        <tbody>
+                            <c:forEach var="h" items="${allHackathons}" varStatus="s">
+                                <tr>
+                                    <td>${(currentPage - 1) * 10 + s.count}</td>
+                                    <td>
+                                        <span class="event-title">${h.title}</span>
+                                        <div>
+                                            <span class="type-badge">${h.eventType}</span>
+                                            <span class="type-badge">${h.payment}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>${h.userType}</div>
+                                        <div class="team-size">Team: ${h.minTeamSize} - ${h.maxTeamSize}</div>
+                                    </td>
+                                    <td>
+                                        <div class="date-start"><i class="fas fa-calendar-check"></i> ${h.registrationStartDate}</div>
+                                        <div class="date-end"><i class="fas fa-calendar-times"></i> ${h.registrationEndDate}</div>
+                                    </td>
+                                    <td>${h.location}</td>
+                                    <td>
+                                        <c:choose>
+                                            <c:when test="${h.status == 'LIVE'}">
+                                                <span class="status-badge status-live">Live</span>
+                                            </c:when>
+                                            <c:when test="${h.status == 'EXPIRED'}">
+                                                <span class="status-badge status-expired">Expired</span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span class="status-badge status-upcoming">${h.status}</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="btn-icon btn-edit" onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'" title="Edit">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                            <button class="btn-icon btn-delete" onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button class="btn-icon btn-judge" onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'" title="Manage Judges">
+                                                <i class="fas fa-users"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            <c:if test="${empty allHackathons}">
+                                <tr><td colspan="7" style="text-align:center; padding: 60px;">No hackathons found. <a href="create-hackathon" style="color:#3b82f6;">Create one</a>?</td></tr>
+                            </c:if>
+                        </tbody>
                     </table>
                 </div>
 
-             <div class="pagination" style="align-items:center; gap:10px;">
-			
-			    <!-- Previous Button -->
-			    <c:choose>
-			        <c:when test="${currentPage > 1}">
-			            <a class="page-link"
-			               href="listHackathon?page=${currentPage - 1}">
-			                ← Previous
-			            </a>
-			        </c:when>
-			        <c:otherwise>
-			            <span class="page-link" style="opacity:0.5; cursor:not-allowed;">
-			                ← Previous
-			            </span>
-			        </c:otherwise>
-			    </c:choose>
-			
-			    <!-- Page Info -->
-			    <span class="page-link" style="background:#3b82f6; color:white; font-weight:600;">
-			        ${currentPage} 
-			    </span>
-			
-			    <!-- Next Button -->
-			    <c:choose>
-			        <c:when test="${currentPage < totalPages}">
-			            <a class="page-link"
-			               href="listHackathon?page=${currentPage + 1}">
-			                Next →
-			            </a>
-			        </c:when>
-			        <c:otherwise>
-			            <span class="page-link" style="opacity:0.5; cursor:not-allowed;">
-			                Next →
-			            </span>
-			        </c:otherwise>
-			    </c:choose>
-			
-			</div>
-            </div>
+                <!-- Pagination: Prev, current page (skyblue), Next -->
+                <div class="pagination">
+                    <c:choose>
+                        <c:when test="${currentPage > 1}">
+                            <a class="page-link" href="listHackathon?page=${currentPage - 1}">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="page-link disabled"><i class="fas fa-chevron-left"></i> Previous</span>
+                        </c:otherwise>
+                    </c:choose>
 
-            <!-- Footer -->
-            <footer class="footer">
-                &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
-            </footer>
+                    <span class="current-page">${currentPage}</span>
+
+                    <c:choose>
+                        <c:when test="${currentPage < totalPages}">
+                            <a class="page-link" href="listHackathon?page=${currentPage + 1}">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="page-link disabled">Next <i class="fas fa-chevron-right"></i></span>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
         </div>
+        <footer class="footer">
+            &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
+        </footer>
     </div>
 </div>
 
 <script>
-    // Sidebar Toggle (if needed)
+    // Sidebar toggle and mobile menu
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -738,57 +768,22 @@ html, body {
     });
 
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
-            if (sidebar) sidebar.classList.remove('mobile-open');
+        if (window.innerWidth > 768 && sidebar) {
+            sidebar.classList.remove('mobile-open');
         }
     });
-
-    // Pagination logic (works with tableBody)
-    document.addEventListener('DOMContentLoaded', function() {
-        const rows = document.querySelectorAll('#tableBody tr');
-        const rowsPerPage = 10;
-        let currentPage = 1;
-        const totalPages = Math.ceil(rows.length / rowsPerPage);
-
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        const pageInfo = document.getElementById('pageInfo');
-
-        function showPage(page) {
-            const start = (page - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            rows.forEach((row, index) => {
-                row.style.display = (index >= start && index < end) ? '' : 'none';
-            });
-            pageInfo.textContent = `Page ${page} of ${totalPages}`;
-            prevBtn.disabled = (page === 1);
-            nextBtn.disabled = (page === totalPages || totalPages === 0);
-        }
-
-        if (prevBtn && nextBtn && totalPages > 0) {
-            prevBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
-                }
-            });
-
-            nextBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
-                }
-            });
-
-            showPage(1);
-        } else if (prevBtn && nextBtn) {
-            // No rows – disable pagination
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-            pageInfo.textContent = 'Page 0 of 0';
-        }
+	
+    // User dropdown from AdminHeader
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+    }
+    document.addEventListener('click', () => {
+        if (dropdownMenu) dropdownMenu.classList.remove('show');
     });
 </script>
 </body>

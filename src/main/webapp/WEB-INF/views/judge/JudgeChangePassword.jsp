@@ -2,67 +2,242 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Judge - Change Password</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@500;700&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-	--bg:#f2f7fb;--line:#dce8f4;--text:#11243b;--muted:#617892;
-	--surface:#fff;--primary:#0f9d94;
-}
-body{font-family:'Space Grotesk',sans-serif;min-height:100vh;background:radial-gradient(circle at 12% 8%, #d9edf5 0%, transparent 35%),radial-gradient(circle at 90% 10%, #ffe8d8 0%, transparent 32%),var(--bg)}
-.page{
-	min-height:100vh;
-	display:flex;
-	flex-direction:column;
-	align-items:center;
-	padding:22px 12px;
-}
-.card{width:min(500px,92vw);background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 14px 34px rgba(17,36,59,.10)}
-h2{font-family:'Sora',sans-serif}
-p{margin-top:8px;color:var(--muted);line-height:1.6}
-.group{margin-top:12px}
-label{display:block;font-size:13px;margin-bottom:6px;color:#4d657f}
-input{width:100%;height:44px;border:1px solid #d5e3f0;border-radius:10px;padding:0 12px}
-input:focus{outline:none;border-color:#0f9d94;box-shadow:0 0 0 3px rgba(15,157,148,.16)}
-button{margin-top:14px;width:100%;height:44px;border:0;border-radius:10px;background:#0f9d94;color:#fff;font-weight:700;cursor:pointer}
-.err{margin-top:10px;padding:8px 10px;border-radius:8px;background:#fff2f2;border:1px solid #ffcaca;color:#cb2f2f;font-size:14px}
-.links{margin-top:10px;text-align:center}
-.links a{text-decoration:none;color:#1f4264;font-weight:700;font-size:13px}
-.site-footer{
-	margin-top:auto;
-	padding-top:14px;
-	width:100%;
-	text-align:center;
-	color:#6f849a;
-	font-size:13px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password | CodeVerse Judge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .page-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.04);
+            border: 1px solid #eef2f6;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-header p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-group-icon {
+            padding: 0 1rem;
+            color: #3b82f6;
+            font-size: 1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.85rem 1rem 0.85rem 0;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            color: #1e293b;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 0.85rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Error Alert */
+        .alert-error {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            border-radius: 16px;
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            color: #991b1b;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-error i {
+            color: #ef4444;
+        }
+
+        /* Links */
+        .links {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .links a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .links a:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            .card-header h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-	<div class="page">
-		<div class="card">
-			<h2>Change Password</h2>
-			<p>For security, set your own password before accessing judge dashboard.</p>
-			<form action="/judge/update-password" method="post">
-				<div class="group">
-					<label>New Password</label>
-					<input type="password" name="newPassword" required>
-				</div>
-				<div class="group">
-					<label>Confirm Password</label>
-					<input type="password" name="confirmPassword" required>
-				</div>
-				<button type="submit">Update Password</button>
-				<c:if test="${not empty error}">
-					<div class="err">${error}</div>
-				</c:if>
-			</form>
-			<div class="links"><a href="/judge-dashboard">Back to Dashboard</a></div>
-		</div>
-		<footer class="site-footer">CodeVerse Judge Panel</footer>
-	</div>
+<div class="page-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Change Password</h2>
+            <p>Set your own password to secure your account</p>
+        </div>
+
+        <form action="/judge/update-password" method="post">
+            <div class="form-group">
+                <label>New Password</label>
+                <div class="input-group">
+                    <span class="input-group-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="newPassword" placeholder="Enter new password" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <div class="input-group">
+                    <span class="input-group-icon"><i class="fas fa-check-circle"></i></span>
+                    <input type="password" name="confirmPassword" placeholder="Confirm new password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-save"></i> Update Password
+            </button>
+
+            <c:if test="${not empty error}">
+                <div class="alert-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>${error}</span>
+                </div>
+            </c:if>
+        </form>
+
+        <div class="links">
+            <a href="/judge/judge-dashboard">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+    <div class="footer">
+        &copy; 2026 CodeVerse – Judge Panel
+    </div>
+</div>
 </body>
 </html>

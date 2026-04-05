@@ -25,4 +25,12 @@ public interface HackathonParticipantRepository extends JpaRepository<HackathonP
 		       "AND p.participantId NOT IN (SELECT i.invitedUserId FROM HackathonTeamInviteEntity i " +
 		       "                            WHERE i.hackathonId = :hackathonId AND i.inviteStatus = 'PENDING')")
 		List<Integer> findParticipantIdsNotInAnyTeamAndNoPendingInvite(@Param("hackathonId") Integer hackathonId);
+	
+	@Query(value = "SELECT DATE_FORMAT(joined_date, '%b %Y') as month, COUNT(*) as count " +
+		       "FROM hackathon_participant " +
+		       "GROUP BY DATE_FORMAT(joined_date, '%b %Y') " +
+		       "ORDER BY MIN(joined_date)", nativeQuery = true)
+		List<Object[]> getMonthlyRegistrations();
+		
+		
 }

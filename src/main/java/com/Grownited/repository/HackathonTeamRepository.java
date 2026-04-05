@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.Grownited.entity.HackathonTeamEntity;
@@ -22,5 +23,11 @@ public interface HackathonTeamRepository extends JpaRepository<HackathonTeamEnti
 	List<HackathonTeamEntity> findByHackathonId(Integer hackathonId);
 
 	List<HackathonTeamEntity> findByTeamLeaderId(Integer teamLeaderId);
+	
+	@Query(value = "SELECT team_size, COUNT(*) FROM (" +
+		       "  SELECT team_id, COUNT(member_id) as team_size FROM hackathon_team_members " +
+		       "  GROUP BY team_id" +
+		       ") AS sizes GROUP BY team_size ORDER BY team_size", nativeQuery = true)
+		List<Object[]> getTeamSizeDistribution();
 	
 }

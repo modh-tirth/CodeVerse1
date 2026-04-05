@@ -45,7 +45,7 @@
     padding: 24px 20px;
     display: flex;
     align-items: center;
-    justify-content: center; /* centered – toggle button removed */
+    justify-content: center;
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
@@ -125,7 +125,7 @@
   }
 
   .submenu.open {
-    max-height: 200px; /* adjust based on content */
+    max-height: 200px;
   }
 
   .submenu-item {
@@ -170,51 +170,29 @@
   .sidebar.collapsed .submenu {
     display: none;
   }
- 	   
-  }
-  /* Add this to your Sidebar CSS if not present */
-@media (max-width: 768px) {
-    #sidebar {
-        position: fixed;
-        top: 0;
-        left: -260px; /* Start hidden */
-        width: 260px;
-        height: 100vh;
-        z-index: 9999; /* Higher than header */
-        transition: left 0.3s ease;
-    }
- 
-}
 
-/* Default Mobile Sidebar State (Hidden) */
-@media (max-width: 768px) {
+  @media (max-width: 768px) {
     #sidebar {
         position: fixed;
         top: 0;
-        left: -280px; /* Fully hidden off-screen (adjust to sidebar width) */
+        left: -280px;
         width: 280px;
         height: 100vh;
-        z-index: 2000; /* Must be above header and content */
-        background: #1e293b; /* Match your dashboard color */
+        z-index: 2000;
+        background: #1e293b;
         transition: left 0.3s ease-in-out;
         box-shadow: none;
     }
-
-    /* Shown State when toggled */
     #sidebar.mobile-open {
-        left: 0; 
+        left: 0;
         box-shadow: 10px 0 25px rgba(0,0,0,0.2);
     }
-    
-    /* Ensure the main content takes full width on mobile */
     .main-content {
         margin-left: 0 !important;
         width: 100% !important;
     }
-}
-
+  }
 </style>
-  
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
@@ -223,18 +201,17 @@
       <img alt="CodeVerse Logo" src="${pageContext.request.contextPath}/img/logo/logo1.png" class="logo-icon-img">
       <span class="logo-text">CodeVerse</span>
     </div>
-    <!-- Internal toggle button removed – controlled from header -->
   </div>
 
   <div class="sidebar-menu">
-    <!-- Dashboard (direct link) -->
+    <!-- Dashboard -->
     <div class="menu-item active">
       <i class="fas fa-th-large"></i>
       <span>Dashboard</span>
-      <a href="/dashboard" style="position:absolute; inset:0;"></a> <!-- invisible link covers whole item -->
+      <a href="/dashboard" style="position:absolute; inset:0;"></a>
     </div>
 
-    <!-- Hackathons with submenu -->
+    <!-- Hackathons submenu -->
     <div class="menu-item" id="hackathonMenu">
       <i class="fas fa-calendar-alt"></i>
       <span>Hackathons</span>
@@ -245,19 +222,19 @@
       <li class="submenu-item"><a href="/listHackathon"><i class="fas fa-list"></i> List Hackathons</a></li>
     </ul>
 
-    <!-- Users with submenu -->
+    <!-- Users submenu -->
     <div class="menu-item" id="userMenu">
       <i class="fas fa-users"></i>
       <span>Users</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
     </div>
     <ul class="submenu" id="userSubmenu">
-     <!--  <li class="submenu-item"><a href="/register"><i class="fas fa-plus-circle"></i> Add User</a></li> -->
       <li class="submenu-item"><a href="newUserType"><i class="fas fa-tag"></i> Add User Type</a></li>
       <li class="submenu-item"><a href="listUser"><i class="fas fa-list"></i> List Users</a></li>
     </ul>
-	
-	<div class="menu-item" id="judgeMenu">
+
+    <!-- Judges submenu -->
+    <div class="menu-item" id="judgeMenu">
       <i class="fas fa-gavel"></i>
       <span>Judges</span>
       <i class="fas fa-chevron-left arrow-icon"></i>
@@ -266,60 +243,41 @@
       <li class="submenu-item"><a href="/newJudge"><i class="fas fa-user-plus"></i> Invite Judge</a></li>
       <li class="submenu-item"><a href="/listJudge"><i class="fas fa-list"></i> List Judges</a></li>
     </ul>
-  
-    <!-- Category with submenu -->
-    <!-- <div class="menu-item" id="categoryMenu">
-      <i class="fas fa-folder"></i>
-      <span>Category</span>
-      <i class="fas fa-chevron-left arrow-icon"></i>
-    </div>
-    <ul class="submenu" id="categorySubmenu">
-      <li class="submenu-item"><a href="newCategory"><i class="fas fa-plus-circle"></i> Add Category</a></li>
-      <li class="submenu-item"><a href="listCategory"><i class="fas fa-list"></i> List Categories</a></li>
-    </ul> -->
 
- 
-
-    <!-- Settings -->
+    <!-- Logout (replaces Settings) -->
     <div class="menu-item">
-      <i class="fas fa-cog"></i>
-      <span>Settings</span>
-      <a href="/settings" style="position:absolute; inset:0;"></a>
+      <i class="fas fa-sign-out-alt"></i>
+      <span>Logout</span>
+      <a href="${pageContext.request.contextPath}/logout" style="position:absolute; inset:0;"></a>
     </div>
   </div>
 
-  <div class="sidebar-footer" style="padding: 20px;">
-    <!-- optional -->
-  </div>
+  <div class="sidebar-footer" style="padding: 20px;"></div>
 </aside>
 
 <script>
-
-const menuItems = document.querySelectorAll('.menu-item');
-
-menuItems.forEach(item => {
-  item.addEventListener('click', function () {
-    
-    // Remove active from all
-    menuItems.forEach(i => i.classList.remove('active'));
-    
-    // Add active to clicked one
-    this.classList.add('active');
+  const menuItems = document.querySelectorAll('.menu-item');
+  menuItems.forEach(item => {
+    item.addEventListener('click', function (e) {
+      // Don't interfere if clicking on the logout link (let it navigate)
+      if (this.querySelector('a') && this.querySelector('a').getAttribute('href') === '${pageContext.request.contextPath}/logout') {
+        return; // allow normal navigation
+      }
+      menuItems.forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
   });
-});
 
   const sidebar = document.getElementById('sidebar');
 
-  // Submenu toggles (only when sidebar is expanded)
   const hackathonMenu = document.getElementById('hackathonMenu');
   const hackathonSubmenu = document.getElementById('hackathonSubmenu');
   const userMenu = document.getElementById('userMenu');
   const judgeMenu = document.getElementById('judgeMenu');
   const userSubmenu = document.getElementById('userSubmenu');
-//  const categoryMenu = document.getElementById('categoryMenu');
-  const categorySubmenu = document.getElementById('categorySubmenu');
 
   function setupSubmenu(menu, submenu) {
+    if (!menu || !submenu) return;
     menu.addEventListener('click', (e) => {
       e.stopPropagation();
       if (!sidebar.classList.contains('collapsed')) {
@@ -331,31 +289,19 @@ menuItems.forEach(item => {
 
   setupSubmenu(hackathonMenu, hackathonSubmenu);
   setupSubmenu(userMenu, userSubmenu);
-//  setupSubmenu(categoryMenu, categorySubmenu);
-  setupSubmenu(judgeMenu,judgeSubmenu)
+  setupSubmenu(judgeMenu, judgeSubmenu);
 
   const currentPath = window.location.pathname;
-
-  // Select all submenu links
   document.querySelectorAll('.submenu-item a').forEach(link => {
     const href = link.getAttribute('href');
-
     if (href === currentPath) {
-      // Highlight submenu item
       link.closest('.submenu-item').classList.add('active');
-
-      // Get parent submenu
       const submenu = link.closest('.submenu');
-
-      // Open submenu
       submenu.classList.add('open');
-
-      // Get corresponding menu-item
       const menuItem = submenu.previousElementSibling;
-
       if (menuItem) {
         menuItem.classList.add('active');
-        menuItem.classList.add('open'); // rotate arrow
+        menuItem.classList.add('open');
       }
     }
   });

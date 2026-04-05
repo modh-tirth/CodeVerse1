@@ -26,7 +26,13 @@ public interface HackathonRepository extends JpaRepository<HackathonEntity, Inte
 	    @Query("SELECT DISTINCT h.userType FROM HackathonEntity h WHERE h.userType IS NOT NULL")
 		List<String> findDistinctUserType();
 	    
-	    
+	    @Query(value = "SELECT h.title, COUNT(hp.participant_id) as participant_count " +
+	    	       "FROM hackathon h " +
+	    	       "LEFT JOIN hackathon_participant hp ON h.hackathon_id = hp.hackathon_id " +
+	    	       "GROUP BY h.hackathon_id " +
+	    	       "ORDER BY participant_count DESC " +
+	    	       "LIMIT 5", nativeQuery = true)
+	    	List<Object[]> getTopHackathonsByParticipants(); 
 	 
 	    
 }

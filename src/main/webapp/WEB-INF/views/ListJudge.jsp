@@ -53,17 +53,12 @@
             align-items: center;
             gap: 12px;
         }
-        .logo-icon {
-            background: #3b82f6;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
+        .logo-icon-img {
+            height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
         }
         .logo-text {
             font-size: 1.25rem;
@@ -108,26 +103,106 @@
             color: #cbd5e1;
             transition: 0.2s;
             white-space: nowrap;
+            cursor: pointer;
+            position: relative;
         }
-        .menu-item i {
+        .menu-item i:first-child {
             font-size: 1.25rem;
             min-width: 36px;
         }
         .menu-item span {
             margin-left: 8px;
             font-weight: 500;
+            flex: 1;
         }
-        .menu-item:hover, .menu-item.active {
+        .menu-item .arrow-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s;
+            margin-left: auto;
+        }
+        .menu-item.open .arrow-icon {
+            transform: rotate(-90deg);
+        }
+        .menu-item:hover {
             background: rgba(59, 130, 246, 0.2);
             color: white;
         }
-        .sidebar.collapsed .menu-item span {
+        .menu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: white;
+        }
+        .submenu {
+            list-style: none;
+            padding-left: 56px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .submenu.open {
+            max-height: 200px;
+        }
+        .submenu-item {
+            padding: 10px 0 10px 12px;
+            margin: 2px 8px 2px 0;
+            border-radius: 10px;
+            color: #a0afc0;
+            font-size: 0.95rem;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+        }
+        .submenu-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .submenu-item i {
+            margin-right: 10px;
+            font-size: 1rem;
+            width: 20px;
+            color: #a0afc0;
+        }
+        .submenu-item a {
+            color: inherit;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .menu-item .arrow-icon {
             display: none;
         }
-        .sidebar.collapsed .menu-item {
-            justify-content: center;
-            padding: 12px 0;
+        .sidebar.collapsed .submenu {
+            display: none;
         }
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: -280px;
+                width: 280px;
+                height: 100vh;
+                z-index: 2000;
+                background: #1e293b;
+                transition: left 0.3s ease-in-out;
+                box-shadow: none;
+            }
+            #sidebar.mobile-open {
+                left: 0;
+                box-shadow: 10px 0 25px rgba(0,0,0,0.2);
+            }
+            .main-content {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* Main content area */
         .main-content {
             flex: 1;
             display: flex;
@@ -168,27 +243,14 @@
             align-items: center;
             gap: 25px;
         }
-        .notification-icon {
+        .user-dropdown {
             position: relative;
-            font-size: 1.25rem;
-            color: #475569;
             cursor: pointer;
-        }
-        .notification-badge {
-            position: absolute;
-            top: -6px;
-            right: -6px;
-            background: #ef4444;
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 5px;
-            border-radius: 20px;
         }
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
-            cursor: pointer;
         }
         .user-avatar {
             width: 40px;
@@ -218,6 +280,41 @@
                 color: #64748b;
             }
         }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            min-width: 180px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #edf2f7;
+            overflow: hidden;
+            z-index: 1001;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+        .dropdown-item:hover {
+            background: #f1f5f9;
+        }
         .content-area {
             flex: 1;
             overflow-y: auto;
@@ -230,37 +327,19 @@
             text-align: center;
             color: #64748b;
             font-size: 0.9rem;
+            flex-shrink: 0;
         }
         @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                left: -260px;
-                height: 100vh;
-                z-index: 1000;
-                transition: left 0.3s ease;
-            }
-            .sidebar.mobile-open {
-                left: 0;
-            }
-            .main-content {
-                width: 100%;
-            }
-            .mobile-menu-btn {
-                display: block;
-            }
-            .top-header {
-                padding: 16px 20px;
-            }
             .content-area {
                 padding: 20px;
             }
         }
 
-        /* ========== CUSTOM TABLE & CARD STYLES ========== */
+        /* ========== IMPROVED TABLE & CARD STYLES ========== */
         .table-card {
             background: white;
             border-radius: 24px;
-            padding: 30px;
+            padding: 24px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.02);
             border: 1px solid #edf2f7;
         }
@@ -268,9 +347,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
             border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         .card-header-custom h3 {
             font-size: 1.2rem;
@@ -280,40 +361,114 @@
             align-items: center;
             gap: 10px;
         }
-        .card-header-custom i { color: #3b82f6; }
-        .table {
-            margin-top: 20px;
-            border-collapse: separate;
-            border-spacing: 0;
+        .card-header-custom i {
+            color: #3b82f6;
         }
-        .table thead th {
-            background: #f8fafc;
-            border-bottom: 2px solid #e2e8f0;
-            color: #475569;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            padding: 15px;
-        }
-        .table tbody td {
-            padding: 12px 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #edf2f7;
-        }
-        .alert-custom {
-            border-radius: 16px;
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
             border: none;
-            margin-bottom: 20px;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
         }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .judge-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .judge-table th {
+            text-align: left;
+            padding: 16px 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .judge-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #edf2f7;
+            color: #1e293b;
+            vertical-align: middle;
+        }
+        .judge-table tr:hover td {
+            background: #f8fafc;
+        }
+        /* Badges */
         .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             padding: 6px 12px;
             border-radius: 30px;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
-        .btn-link {
-            text-decoration: none;
-            font-weight: 500;
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-warning {
+            background: #fed7aa;
+            color: #9b4d00;
+        }
+        .badge-primary {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        /* Alert */
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 16px 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #065f46;
+        }
+        .alert-success i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #065f46;
+        }
+        .text-muted {
+            color: #94a3b8;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .py-4 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        .mt-3 {
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -323,26 +478,26 @@
     <div class="main-content">
         <jsp:include page="AdminHeader.jsp" />
         <div class="content-area">
-            <div class="page-header-section" style="margin-bottom: 24px;">
-                <h1 class="page-title" style="font-size: 1.5rem; font-weight: 700; color: #0f172a; margin-bottom: 8px;">All Judges</h1>
-              
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 1.5rem; font-weight: 700; color: #0f172a;">All Judges</h1>
+            </div>
 
             <c:if test="${param.invited == 'true'}">
-                <div class="alert alert-success alert-custom alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> Judge invited successfully. Email with temporary password sent.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="alert-success">
+                    <span><i class="fas fa-check-circle"></i> Judge invited successfully. Email with temporary password sent.</span>
+                    <button type="button" class="btn-close" onclick="this.parentElement.style.display='none';">&times;</button>
                 </div>
             </c:if>
 
             <div class="table-card">
                 <div class="card-header-custom">
                     <h3><i class="fas fa-gavel"></i> Judge List</h3>
-                   <!--  <a href="newJudge" class="btn btn-primary" style="padding: 8px 20px;">
+                    <a href="newJudge" class="btn-primary">
                         <i class="fas fa-user-plus"></i> Invite New Judge
-                    </a> -->
+                    </a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="judge-table">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -360,7 +515,7 @@
                             <c:if test="${empty judgeList}">
                                 <tr>
                                     <td colspan="9" class="text-center text-muted py-4">
-                                        <i class="fas fa-user-slash me-2"></i> No judges found.
+                                        <i class="fas fa-user-slash"></i> No judges found.
                                     </td>
                                 </tr>
                             </c:if>
@@ -376,20 +531,20 @@
                                     <td>
                                         <c:choose>
                                             <c:when test="${j.active}">
-                                                <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Active</span>
+                                                <span class="badge badge-success"><i class="fas fa-check-circle"></i> Active</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span class="badge bg-danger"><i class="fas fa-ban me-1"></i> Inactive</span>
+                                                <span class="badge badge-danger"><i class="fas fa-ban"></i> Inactive</span>
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${j.passwordResetRequired}">
-                                                <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i> Pending</span>
+                                                <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span class="badge bg-primary"><i class="fas fa-check-circle me-1"></i> Completed</span>
+                                                <span class="badge badge-primary"><i class="fas fa-check-circle"></i> Completed</span>
                                             </c:otherwise>
                                         </c:choose>
                                     </td>
@@ -400,12 +555,14 @@
                 </div>
             </div>
         </div>
-      
+        <footer class="footer">
+            &copy; 2026 CodeVerse. All rights reserved. Empowering hackathons.
+        </footer>
     </div>
 </div>
 
-<!-- Sidebar toggle script -->
 <script>
+    // Sidebar toggle and mobile menu logic (compatible with AdminSidebar.js)
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -443,7 +600,19 @@
             sidebar.classList.remove('mobile-open');
         }
     });
+
+    // User dropdown toggle (from AdminHeader)
+    const userDropdown = document.getElementById('userDropdown');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    if (userDropdown) {
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+    }
+    document.addEventListener('click', () => {
+        if (dropdownMenu) dropdownMenu.classList.remove('show');
+    });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
