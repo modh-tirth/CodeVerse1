@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.Grownited.entity.UserDetailEntity;
@@ -104,6 +105,9 @@ public class SessionController {
 		        else if ("judge".equals(dbUser.getRole())) {
 		            return "redirect:/judge/judge-dashboard";
 		        }
+		        else if ("organizer".equals(dbUser.getRole())) {
+		            return "redirect:/organizer/dashboard";
+		        }
 		    }
 		}
 		model.addAttribute("error","Invalid Credentials");
@@ -186,13 +190,14 @@ public class SessionController {
         return "register"; // Refers to register.jsp
     }
     @PostMapping("/stored")
-    public String showRegisterPage(UserEntity userEntity,UserDetailEntity userDetailEntity, MultipartFile profilePic) {
+    public String showRegisterPage(UserEntity userEntity,UserDetailEntity userDetailEntity, MultipartFile profilePic, @RequestParam String role) {
     		System.out.println(userEntity.getFirstName());
     		System.out.println(userEntity.getLastName());
     		System.out.println(userDetailEntity.getCity());
     		System.out.println(userDetailEntity.getState());
     		
-    		userEntity.setRole("participant");
+    		//userEntity.setRole("participant");
+    		userEntity.setRole(role);
     		userEntity.setActive(true);
     		userEntity.setCreateAtDate(LocalDate.now());
     		

@@ -538,7 +538,16 @@
                                 <input type="file" name="profilePic" accept="image/*">
                             </div>
                         </div>
-
+						<div class="form-row">
+						    <div class="input-group full-width">
+						        <label><i class="fas fa-user-tag"></i> I am a *</label>
+						        <select name="role" required>
+						            <option value="participant">Participant – Join hackathons and form teams</option>
+						            <option value="organizer">Organizer – Create and manage hackathons</option>
+						        </select>
+						    </div>
+						</div>	
+							
                         <!-- Form Actions -->
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">
