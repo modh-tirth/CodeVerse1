@@ -32,5 +32,22 @@ public interface HackathonParticipantRepository extends JpaRepository<HackathonP
 		       "ORDER BY MIN(joined_date)", nativeQuery = true)
 		List<Object[]> getMonthlyRegistrations();
 		
+		 // Count all registrations where hackathon belongs to given organizer
+	    @Query("SELECT COUNT(hp) FROM HackathonParticipantEntity hp WHERE hp.hackathonId IN (SELECT h.hackathonId FROM HackathonEntity h WHERE h.userId = :organizerId)")
+	    Long countRegistrationsByOrganizer(@Param("organizerId") Integer organizerId);
+
+	    // Count registrations per hackathon for the organizer
+	    @Query("SELECT hp.hackathonId, COUNT(hp) FROM HackathonParticipantEntity hp WHERE hp.hackathonId IN (SELECT h.hackathonId FROM HackathonEntity h WHERE h.userId = :organizerId) GROUP BY hp.hackathonId")
+	    List<Object[]> countRegistrationsGroupByHackathon(@Param("organizerId") Integer organizerId);
+	    
+	    @Query(value = "SELECT hp.hackathon_id, COUNT(*) FROM hackathon_participant hp " +
+	               "WHERE hp.hackathon_id IN (SELECT hackathon_id FROM hackathon WHERE user_id = :organizerId) " +
+	               "GROUP BY hp.hackathon_id", nativeQuery = true)
+	List<Object[]> countRegistrationsGroupByHackathonNative(@Param("organizerId") Integer organizerId);
+	
+	
+	
+	}
 		
-}
+		
+

@@ -650,7 +650,7 @@
                         <i class="fas fa-arrow-left"></i> Back to Hackathons
                     </a>
                 </div>
-                <form action="saveHackathonJudge" method="post">
+                <form action="assign-judge" method="post">
                     <input type="hidden" name="hackathonId" value="${hackathon.hackathonId}">
                     <div class="form-row">
                         <div class="form-group-flex">
@@ -707,7 +707,7 @@
                                     <td>${judgeMap[a.userId].contactNum}</td>
                                     <td>
                                         <a class="btn btn-danger" style="padding: 8px 16px; font-size: 0.8rem;"
-                                           href="deleteHackathonJudge?hackathonJudgeId=${a.hackathonJudgeId}&hackathonId=${hackathon.hackathonId}"
+                                           href="remove-judge?hackathonJudgeId=${a.hackathonJudgeId}&hackathonId=${hackathon.hackathonId}"
                                            onclick="return confirm('Remove this judge from hackathon?')">
                                             <i class="fas fa-trash-alt"></i> Remove
                                         </a>

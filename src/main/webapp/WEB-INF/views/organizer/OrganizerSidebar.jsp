@@ -163,7 +163,7 @@
             </a>
         </div>
         <div class="menu-item">
-            <a href="/organizer/manage-judges">
+            <a href="/organizer/newJudge">
                 <i class="fas fa-users"></i>
                 <span>Manage Judges</span>
             </a>

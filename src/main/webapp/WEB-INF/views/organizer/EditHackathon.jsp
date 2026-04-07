@@ -549,7 +549,7 @@
                     </a>
                 </div>
 
-                <form action="updateHackathon" method="post" enctype="multipart/form-data">
+                <form action="${pageContext.request.contextPath}/organizer/update-hackathon" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="hackathonId" value="${hackathon.hackathonId}" />
                     <input type="hidden" name="userId" value="${hackathon.userId}" />
                     <input type="hidden" name="leaderboardPublished" value="${hackathon.leaderboardPublished}" />

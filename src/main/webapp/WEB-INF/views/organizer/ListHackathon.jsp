@@ -778,9 +778,9 @@
                                     </td>
                                     <td>
                                         <div class="action-btns">
-                                            <button class="btn-icon btn-edit" onclick="location.href='editHackathon?hackathonId=${h.hackathonId}'" title="Edit"><i class="fas fa-pencil-alt"></i></button>
-                                            <button class="btn-icon btn-delete" onclick="if(confirm('Delete this event?')) location.href='deleteHackathon?hackathonId=${h.hackathonId}'" title="Delete"><i class="fas fa-trash"></i></button>
-                                            <button class="btn-icon btn-judge" onclick="location.href='manageHackathonJudge?hackathonId=${h.hackathonId}'" title="Manage Judges"><i class="fas fa-users"></i></button>
+                                            <button class="btn-icon btn-edit" onclick="location.href='edit-hackathon?hackathonId=${h.hackathonId}'" title="Edit"><i class="fas fa-pencil-alt"></i></button>
+                                            <button class="btn-icon btn-delete" onclick="if(confirm('Delete this event?')) location.href='delete-hackathon?hackathonId=${h.hackathonId}'" title="Delete"><i class="fas fa-trash"></i></button>
+                                            <button class="btn-icon btn-judge" onclick="location.href='manage-judges?hackathonId=${h.hackathonId}'" title="Manage Judges"><i class="fas fa-users"></i></button>
                                         </div>
                                     </td>
                                 </tr>
