@@ -222,6 +222,16 @@
       <li class="submenu-item"><a href="/listHackathon"><i class="fas fa-list"></i> List Hackathons</a></li>
     </ul>
 
+ <!-- Judges submenu -->
+    <div class="menu-item" id="judgeMenu">
+      <i class="fas fa-gavel"></i>
+      <span>Judges</span>
+      <i class="fas fa-chevron-left arrow-icon"></i>
+    </div>
+    <ul class="submenu" id="judgeSubmenu">
+      <li class="submenu-item"><a href="/newJudge"><i class="fas fa-user-plus"></i> Invite Judge</a></li>
+      <li class="submenu-item"><a href="/listJudge"><i class="fas fa-list"></i> List Judges</a></li>
+    </ul>
     <!-- Users submenu -->
     <div class="menu-item" id="userMenu">
       <i class="fas fa-users"></i>
@@ -233,16 +243,7 @@
       <li class="submenu-item"><a href="listUser"><i class="fas fa-list"></i> List Users</a></li>
     </ul>
 
-    <!-- Judges submenu -->
-    <div class="menu-item" id="judgeMenu">
-      <i class="fas fa-gavel"></i>
-      <span>Judges</span>
-      <i class="fas fa-chevron-left arrow-icon"></i>
-    </div>
-    <ul class="submenu" id="judgeSubmenu">
-      <li class="submenu-item"><a href="/newJudge"><i class="fas fa-user-plus"></i> Invite Judge</a></li>
-      <li class="submenu-item"><a href="/listJudge"><i class="fas fa-list"></i> List Judges</a></li>
-    </ul>
+   
 
     <!-- Logout (replaces Settings) -->
     <div class="menu-item">
