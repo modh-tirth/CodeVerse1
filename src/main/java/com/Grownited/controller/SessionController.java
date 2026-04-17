@@ -60,7 +60,7 @@ public class SessionController {
     public String redirectToLogin() {
         return "redirect:/login";
     }
-    
+	
     @PostMapping("/authenticate")
 	public String authenticate(String email, String password,Model model,HttpSession session) {
 		Optional<UserEntity> op = userRepository.findByEmail(email);
