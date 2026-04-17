@@ -207,7 +207,8 @@ public class SessionController {
     		
     		System.out.println(profilePic.getOriginalFilename());
     		try {
-    			Map  map = 	cloudinary.uploader().upload(profilePic.getBytes(), null);
+    			@SuppressWarnings("unchecked")
+    			Map<String, Object>  map = 	cloudinary.uploader().upload(profilePic.getBytes(), null);
     			String profilePicURL = map.get("secure_url").toString();
     			System.out.println(profilePicURL);
     			userEntity.setProfilePicURL(profilePicURL);

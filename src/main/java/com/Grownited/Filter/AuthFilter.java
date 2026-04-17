@@ -1,7 +1,6 @@
 package com.Grownited.Filter;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
@@ -27,7 +26,6 @@ public class AuthFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest)request;
 		HttpServletResponse res = (HttpServletResponse)response;
 		
-		String url = req.getRequestURL().toString();
 		String uri = req.getRequestURI().toString();
 		
 		ArrayList<String> publicUrl = new ArrayList<>();

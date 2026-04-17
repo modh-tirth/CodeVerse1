@@ -276,7 +276,8 @@ public class JudgeController {
 
 		if (profilePic != null && !profilePic.isEmpty()) {
 			try {
-				Map upload = cloudinary.uploader().upload(profilePic.getBytes(), null);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> upload = cloudinary.uploader().upload(profilePic.getBytes(), null);
 				Object secureUrl = upload.get("secure_url");
 				if (secureUrl != null) {
 					dbUser.setProfilePicURL(secureUrl.toString());

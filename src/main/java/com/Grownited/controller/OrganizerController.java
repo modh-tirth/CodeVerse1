@@ -5,7 +5,6 @@ import com.Grownited.repository.*;
 import com.Grownited.service.HackathonService;
 import com.cloudinary.Cloudinary;
 
-import org.apache.hc.client5.http.auth.AuthStateCacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
-import tools.jackson.databind.ObjectMapper;
-
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -54,12 +50,6 @@ public class OrganizerController {
 	@Autowired
 	private PaymentRepository paymentRepository;
 	
-	@Autowired
-	private HackathonSubmissionRepository hackathonSubmissionRepository;
-	@Autowired
-	private HackathonResultRepository hackathonResultRepository;
-	@Autowired
-	private HackathonTeamRepository hackathonTeamRepository;
 
 	// Dashboard – list only hackathons created by this organizer
 
@@ -169,7 +159,8 @@ public class OrganizerController {
 
 		if (hackathonPoster != null && !hackathonPoster.isEmpty()) {
 			try {
-				Map map = cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map = cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
 				hackathonEntity.setHackathonPosterURL(map.get("secure_url").toString());
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -283,7 +274,8 @@ public class OrganizerController {
 
 		if (hackathonPoster != null && !hackathonPoster.isEmpty()) {
 			try {
-				Map map = cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map = cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
 				hackathonEntity.setHackathonPosterURL(map.get("secure_url").toString());
 			} catch (IOException e) {
 				e.printStackTrace();

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.Grownited.entity.HackathonEntity;
 import com.Grownited.entity.HackathonPrizeEntity;
-import com.Grownited.entity.UserTypeEntity;
 import com.Grownited.repository.HackathonPrizeRepository;
 import com.Grownited.repository.HackathonRepository;
 

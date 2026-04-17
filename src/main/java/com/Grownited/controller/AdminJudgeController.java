@@ -1,8 +1,6 @@
 package com.Grownited.controller;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -48,7 +46,10 @@ public class AdminJudgeController {
     public String saveJudge(UserEntity judge, Model model, HttpSession session) {
       
         // 1. Check if email already exists
-        Optional<UserEntity> existing = userRepository.findByEmail(judge.getEmail());
+        if (userRepository.findByEmail(judge.getEmail()).isPresent()) {
+            model.addAttribute("error", "Email already exists");
+            return "NewJudge";
+        }
         // 2. Generate random temporary password (e.g., 8 characters alphanumeric)
         String tempPassword = generateRandomPassword(8);
         judge.setPassword(passwordEncoder.encode(tempPassword));

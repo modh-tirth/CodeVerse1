@@ -122,7 +122,8 @@ public class UserController {
 	     // Handle profile picture upload
 	     if (profilePic != null && !profilePic.isEmpty()) {
 	         try {
-	             Map uploadResult = cloudinary.uploader().upload(profilePic.getBytes(), null);
+	             @SuppressWarnings("unchecked")
+	             Map<String, Object> uploadResult = cloudinary.uploader().upload(profilePic.getBytes(), null);
 	             String profilePicUrl = uploadResult.get("secure_url").toString();
 	             user.setProfilePicURL(profilePicUrl);
 	         } catch (IOException e) {

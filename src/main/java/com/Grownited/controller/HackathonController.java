@@ -117,7 +117,8 @@ public class HackathonController {
 				hackathonEntity.setUserId(currentLogInUser.getUserId());
 			}
 			try {
-    			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+    			@SuppressWarnings("unchecked")
+    			Map<String, Object>  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
     			String hackathonPosterURL = map.get("secure_url").toString();
     			System.out.println(hackathonPosterURL);
     			hackathonEntity.setHackathonPosterURL(hackathonPosterURL);
@@ -310,7 +311,8 @@ public class HackathonController {
 			}
 			 if (hackathonPoster != null && !hackathonPoster.isEmpty()) {
 			try {
-    			Map  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
+    			@SuppressWarnings("unchecked")
+    			Map<String, Object>  map = 	cloudinary.uploader().upload(hackathonPoster.getBytes(), null);
     			String hackathonPosterURL = map.get("secure_url").toString();
     			System.out.println(hackathonPosterURL);
     			hackathonEntity.setHackathonPosterURL(hackathonPosterURL);
