@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.cloudinary.Cloudinary;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com", "com.Grownited"})
 @EnableScheduling
 public class CodeVerseApplication {
 

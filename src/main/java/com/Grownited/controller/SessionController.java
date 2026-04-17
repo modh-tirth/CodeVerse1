@@ -55,11 +55,10 @@ public class SessionController {
 		
 		return "Signup";   //jsp name
 	}
-	
-	// Routes to the login page
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "Login"; // Refers to login.jsp
+
+    @GetMapping("/")
+    public String redirectToLogin() {
+        return "redirect:/login";
     }
     
     @PostMapping("/authenticate")
