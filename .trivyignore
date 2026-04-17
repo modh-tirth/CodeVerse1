@@ -1,0 +1,4 @@
+# .trivyignore
+# Add CVE IDs here that are accepted/false-positives after review
+# Example:
+# CVE-2023-XXXXX

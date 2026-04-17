@@ -1,0 +1,7 @@
+.git
+.gitignore
+*.md
+Jenkinsfile
+docker-compose.yml
+trivy-*.txt
+target/
