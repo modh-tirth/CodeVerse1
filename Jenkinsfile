@@ -2,16 +2,15 @@ pipeline {
     agent any
 
     environment {
-        APP_NAME        = 'codeverse'
-        IMAGE_NAME      = "codeverse/app:${BUILD_NUMBER}"
-        SONAR_HOST_URL  = 'http://localhost:9000'
-        SONAR_TOKEN     = credentials('sonar-token')       // Jenkins credential ID
-        DOCKER_REGISTRY = 'docker.io'                      // change to your registry
+        APP_NAME       = 'codeverse'
+        IMAGE_NAME     = "codeverse/app:${BUILD_NUMBER}"
+        SONAR_HOST_URL = 'http://localhost:9000'
+        SONAR_TOKEN    = credentials('sonar-token')
     }
 
     tools {
-        maven 'Maven-3.9'   // must match the name configured in Jenkins Global Tools
-        jdk   'JDK-17'      // must match the name configured in Jenkins Global Tools
+        maven 'Maven-3.9'
+        jdk   'JDK-21'
     }
 
     stages {
@@ -55,7 +54,7 @@ pipeline {
         stage('SonarQube Analysis') {
         // ─────────────────────────────────────────────
             steps {
-                withSonarQubeEnv('SonarQube') {   // must match Jenkins SonarQube server name
+                withSonarQubeEnv('SonarQube') {
                     sh """
                         mvn sonar:sonar \
                             -Dsonar.projectKey=${APP_NAME} \
@@ -81,6 +80,7 @@ pipeline {
         // ─────────────────────────────────────────────
             steps {
                 sh "docker build -t ${IMAGE_NAME} ."
+                echo "Image built and stored locally: ${IMAGE_NAME}"
             }
         }
 
@@ -99,7 +99,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'trivy-fs-report.txt', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'trivy-fs-report.txt',
+                                     allowEmptyArchive: true
                 }
             }
         }
@@ -119,49 +120,22 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'trivy-image-report.txt', allowEmptyArchive: true
+                    archiveArtifacts artifacts: 'trivy-image-report.txt',
+                                     allowEmptyArchive: true
                 }
                 failure {
-                    echo 'CRITICAL vulnerabilities found in Docker image. Review trivy-image-report.txt'
+                    echo 'CRITICAL vulnerabilities found. Review trivy-image-report.txt'
                 }
             }
         }
 
         // ─────────────────────────────────────────────
-        stage('Push to Registry') {
+        stage('Local Image Info') {
         // ─────────────────────────────────────────────
-            when {
-                branch 'main'   // only push on main branch
-            }
-            steps {
-                withCredentials([usernamePassword(
-                        credentialsId: 'docker-registry-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS')]) {
-                    sh """
-                        echo ${DOCKER_PASS} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USER} --password-stdin
-                        docker push ${IMAGE_NAME}
-                        docker logout
-                    """
-                }
-            }
-        }
-
-        // ─────────────────────────────────────────────
-        stage('Deploy') {
-        // ─────────────────────────────────────────────
-            when {
-                branch 'main'
-            }
             steps {
                 sh """
-                    docker stop ${APP_NAME} || true
-                    docker rm   ${APP_NAME} || true
-                    docker run -d \
-                        --name ${APP_NAME} \
-                        -p 9797:9797 \
-                        --restart unless-stopped \
-                        ${IMAGE_NAME}
+                    echo '>>> Locally stored Docker images:'
+                    docker images codeverse/app
                 """
             }
         }
@@ -172,7 +146,7 @@ pipeline {
             cleanWs()
         }
         success {
-            echo "Pipeline completed successfully for build #${BUILD_NUMBER}"
+            echo "Pipeline completed successfully. Image stored locally: ${IMAGE_NAME}"
         }
         failure {
             echo "Pipeline FAILED for build #${BUILD_NUMBER}. Check logs."
