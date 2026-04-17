@@ -5,11 +5,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ✅ Spring Boot (secure) -->
+    <!-- ✅ Latest secure Spring Boot -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.5</version>
         <relativePath/>
     </parent>
 
@@ -22,13 +22,13 @@
         <java.version>17</java.version>
     </properties>
 
-    <!-- 🔥 CRITICAL FIX: Override vulnerable Tomcat -->
+    <!-- 🔥 FORCE SAFE TOMCAT VERSION -->
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.apache.tomcat.embed</groupId>
                 <artifactId>tomcat-embed-core</artifactId>
-                <version>10.1.35</version> <!-- FIXED VERSION -->
+                <version>10.1.53</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -61,7 +61,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JSP -->
+        <!-- ✅ JSP Support (SAFE NOW) -->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
@@ -110,11 +110,13 @@
     <build>
         <plugins>
 
+            <!-- Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <!-- SonarQube -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
