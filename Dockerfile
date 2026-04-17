@@ -1,28 +1,31 @@
-# ── Stage 1: Build ──────────────────────────────────────────────────────────
+# ── Stage 1: Build ─────────────────────────────────────────
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 
 WORKDIR /app
+
 COPY pom.xml .
-# Download dependencies first (layer cache)
 RUN mvn dependency:go-offline -q
 
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# ── Stage 2: Runtime ─────────────────────────────────────────────────────────
+# ── Stage 2: Runtime ──────────────────────────────────────
 FROM eclipse-temurin:17-jre-alpine
 
-# Non-root user for security
+# Create non-root user
 RUN addgroup -S codeverse && adduser -S codeverse -G codeverse
 
 WORKDIR /app
 
-COPY --from=builder /app/target/*.war app.war
+# 🔥 IMPORTANT: copy JAR (not WAR)
+COPY --from=builder /app/target/*.jar app.jar
 
-RUN chown codeverse:codeverse app.war
+RUN chown codeverse:codeverse app.jar
 
 USER codeverse
 
-EXPOSE 9797
+# ✅ Correct port
+EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.war"]
+# ✅ Run JAR
+ENTRYPOINT ["java", "-jar", "app.jar"]
